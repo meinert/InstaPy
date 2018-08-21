@@ -613,7 +613,7 @@ class InstaPy:
         return self
 
 
-    def follow_likers (self, usernames, photos_grab_amount=3, follow_likers_per_photo=3, randomize=True, sleep_delay=600, interact=False):
+    def follow_likers (self, usernames, photos_grab_amount=3, follow_likers_per_photo=3, randomize=True, sleep_delay=600, interact=False, max_followed=None):
         """ Follows users' likers """
 
         message = "Starting to follow likers.."
@@ -658,6 +658,10 @@ class InstaPy:
                             relax_point = random.randint(7, 14)
                             followed_new=0
                             pass
+
+                        if max_followed is not None and followed_all > max_followed:
+                            self.logger.info("Finished following likers because 'max_followed' reached!\n")
+                            return self
 
         self.logger.info("Finished following likers!\n")
 
