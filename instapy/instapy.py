@@ -128,6 +128,7 @@ class InstaPy:
         self.inap_img = 0
         self.commented = 0
         self.followed_by = 0
+        self.followed_all = 0
         self.unfollowNumber = 0
         self.unfollow_list = []
         self.not_valid_users = 0
@@ -645,6 +646,7 @@ class InstaPy:
                     if followed > 0:
                         followed_all += 1
                         followed_new += 1
+                        self.followed_all = followed_all
                         self.logger.info('Total Follow: {}'.format(str(followed_all)))
                         # Take a break after a good following
                         if followed_new >= relax_point:
@@ -2080,6 +2082,7 @@ class InstaPy:
                 if followed > 0:
                     followed_all += 1
                     followed_new += 1
+                    self.followed_all = followed_all
                     followed_personal += 1
                     self.logger.info('Follow [{}/{}]  |  Total Follow: {}'.format(followed_personal, len(person_list), followed_all))
                     # Take a break after a good following
@@ -2204,6 +2207,7 @@ class InstaPy:
                     followed_all += 1
                     followed_new += 1
                     followed_personal += 1
+                    self.followed_all = followed_all
                     self.logger.info('Follow [{}/{}]  |  Total Follow: {}'.format(followed_personal, len(person_list), followed_all))
                     # Take a break after a good following
                     if followed_new >= relax_point:
@@ -2670,8 +2674,6 @@ class InstaPy:
                                               self.logfolder)
 
         return nonfollowers
-
-
 
 
     def pick_fans(self, username=None, live_match=False, store_locally=True):

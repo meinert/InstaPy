@@ -12,23 +12,23 @@ from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
 
-from .time_util import sleep
-from .util import delete_line_from_file
-from .util import scroll_bottom
-from .util import format_number
-from .util import update_activity
-from .util import add_user_to_blacklist
-from .util import click_element
-from .util import web_adress_navigator
-from .util import interruption_handler
-from .util import get_relationship_counts
-from .print_log_writer import log_followed_pool
-from .print_log_writer import log_uncertain_unfollowed_pool
-from .print_log_writer import log_record_all_unfollowed
-from .relationship_tools import get_followers
-from .relationship_tools import get_following
-from .relationship_tools import get_nonfollowers
-from .database_engine import get_database
+from time_util import sleep
+from util import delete_line_from_file
+from util import scroll_bottom
+from util import format_number
+from util import update_activity
+from util import add_user_to_blacklist
+from util import click_element
+from util import web_adress_navigator
+from util import interruption_handler
+from util import get_relationship_counts
+from print_log_writer import log_followed_pool
+from print_log_writer import log_uncertain_unfollowed_pool
+from print_log_writer import log_record_all_unfollowed
+from relationship_tools import get_followers
+from relationship_tools import get_following
+from relationship_tools import get_nonfollowers
+from database_engine import get_database
 
 
 
