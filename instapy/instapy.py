@@ -18,48 +18,48 @@ from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 import requests
 
-from .clarifai_util import check_image
-from .comment_util import comment_image
-from .like_util import check_link
-from .like_util import verify_liking
-from .comment_util import verify_commenting
-from .like_util import get_links_for_tag
-from .like_util import get_links_from_feed
-from .like_util import get_tags
-from .like_util import get_links_for_location
-from .like_util import like_image
-from .like_util import get_links_for_username
-from .login_util import login_user
-from .print_log_writer import log_follower_num
-from .settings import Settings
-from .print_log_writer import log_following_num
-from .time_util import sleep
-from .time_util import set_sleep_percentage
-from .util import get_active_users
-from .util import validate_username
-from .util import web_adress_navigator
-from .util import interruption_handler
-from .util import highlight_print
-from .util import dump_record_activity
-from .unfollow_util import get_given_user_followers
-from .unfollow_util import get_given_user_following
-from .unfollow_util import unfollow
-from .unfollow_util import unfollow_user
-from .unfollow_util import follow_user
-from .unfollow_util import follow_given_user
-from .unfollow_util import follow_restriction
-from .unfollow_util import dump_follow_restriction
-from .unfollow_util import set_automated_followed_pool
-from .commenters_util import extract_information
-from .commenters_util import users_liked
-from .commenters_util import get_photo_urls_from_profile
-from .relationship_tools import get_following
-from .relationship_tools import get_followers
-from .relationship_tools import get_unfollowers
-from .relationship_tools import get_nonfollowers
-from .relationship_tools import get_fans
-from .relationship_tools import get_mutual_following
-from .database_engine import initialize_database
+from clarifai_util import check_image
+from comment_util import comment_image
+from like_util import check_link
+from like_util import verify_liking
+from comment_util import verify_commenting
+from like_util import get_links_for_tag
+from like_util import get_links_from_feed
+from like_util import get_tags
+from like_util import get_links_for_location
+from like_util import like_image
+from like_util import get_links_for_username
+from login_util import login_user
+from print_log_writer import log_follower_num
+from settings import Settings
+from print_log_writer import log_following_num
+from time_util import sleep
+from time_util import set_sleep_percentage
+from util import get_active_users
+from util import validate_username
+from util import web_adress_navigator
+from util import interruption_handler
+from util import highlight_print
+from util import dump_record_activity
+from unfollow_util import get_given_user_followers
+from unfollow_util import get_given_user_following
+from unfollow_util import unfollow
+from unfollow_util import unfollow_user
+from unfollow_util import follow_user
+from unfollow_util import follow_given_user
+from unfollow_util import follow_restriction
+from unfollow_util import dump_follow_restriction
+from unfollow_util import set_automated_followed_pool
+from commenters_util import extract_information
+from commenters_util import users_liked
+from commenters_util import get_photo_urls_from_profile
+from relationship_tools import get_following
+from relationship_tools import get_followers
+from relationship_tools import get_unfollowers
+from relationship_tools import get_nonfollowers
+from relationship_tools import get_fans
+from relationship_tools import get_mutual_following
+from database_engine import initialize_database
 
 
 
@@ -192,7 +192,6 @@ class InstaPy:
 
         if self.selenium_local_session == True:
             self.set_selenium_local_session()
-
 
     def get_instapy_logger(self, show_logs):
         """
