@@ -1,9 +1,9 @@
 """Module only used for the login part of the script"""
-from .time_util import sleep
+from time_util import sleep
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException
-from .util import update_activity
+from util import update_activity
 import pickle
 import time
 

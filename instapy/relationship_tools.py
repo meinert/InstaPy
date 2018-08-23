@@ -6,10 +6,10 @@ import glob
 import random
 import json
 
-from .time_util import sleep
-from .util import web_adress_navigator
-from .util import get_relationship_counts
-from .util import interruption_handler
+from time_util import sleep
+from util import web_adress_navigator
+from util import get_relationship_counts
+from util import interruption_handler
 
 
 def get_followers(browser,
@@ -863,9 +863,12 @@ def load_followers_data(username, compare_by, compare_track, logger, logfolder):
             structured_entries = {"years":{entry_year:{"months":{entry_month:{"days":{entry_day:{"entries":[entry]}}}}}}}
             continue
 
-        existing_years = list(year for year, month in structured_entries["years"].items())
-        existing_months = list(month for month, day in structured_entries["years"][entry_year]["months"].items())
-        existing_days = list(day for day, entry in structured_entries["years"][entry_year]["months"][entry_month]["days"].items())
+        try:
+            existing_years = list(year for year, month in structured_entries["years"].items())
+            existing_months = list(month for month, day in structured_entries["years"][entry_year]["months"].items())
+            existing_days = list(day for day, entry in structured_entries["years"][entry_year]["months"][entry_month]["days"].items())
+        except Exception as e:
+            print('Error: {0}'.format(e))
         
         if entry_year not in existing_years:
             structured_entries["years"][entry_year] = {"months":{entry_month:{"days":{entry_day:{"entries":[entry]}}}}}

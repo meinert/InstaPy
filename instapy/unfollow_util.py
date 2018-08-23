@@ -12,23 +12,23 @@ from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
 
-from .time_util import sleep
-from .util import delete_line_from_file
-from .util import scroll_bottom
-from .util import format_number
-from .util import update_activity
-from .util import add_user_to_blacklist
-from .util import click_element
-from .util import web_adress_navigator
-from .util import interruption_handler
-from .util import get_relationship_counts
-from .print_log_writer import log_followed_pool
-from .print_log_writer import log_uncertain_unfollowed_pool
-from .print_log_writer import log_record_all_unfollowed
-from .relationship_tools import get_followers
-from .relationship_tools import get_following
-from .relationship_tools import get_nonfollowers
-from .database_engine import get_database
+from time_util import sleep
+from util import delete_line_from_file
+from util import scroll_bottom
+from util import format_number
+from util import update_activity
+from util import add_user_to_blacklist
+from util import click_element
+from util import web_adress_navigator
+from util import interruption_handler
+from util import get_relationship_counts
+from print_log_writer import log_followed_pool
+from print_log_writer import log_uncertain_unfollowed_pool
+from print_log_writer import log_record_all_unfollowed
+from relationship_tools import get_followers
+from relationship_tools import get_following
+from relationship_tools import get_nonfollowers
+from database_engine import get_database
 
 
 
@@ -161,10 +161,10 @@ def unfollow(browser,
 
     if allfollowing is None:
         logger.warning("Unable to find the count of users followed  ~leaving unfollow feature")
-        return 0
+        return 0, []
     elif allfollowing == 0:
         logger.warning("There are 0 people to unfollow  ~leaving unfollow feature")
-        return 0
+        return 0, []
 
     if amount > allfollowing:
         logger.info("There are less users to unfollow than you have requested:  "
@@ -205,7 +205,7 @@ def unfollow(browser,
 
             elif unfollow_track != "all":
                 logger.info("Unfollow track is not specified! ~choose \"all\" or \"nonfollowers\"")
-                return 0
+                return 0, []
 
         #re-generate unfollow list according to the `unfollow_after` parameter for `customList` and `nonFollowers` technics
         if customList == True or nonFollowers == True:
@@ -229,7 +229,7 @@ def unfollow(browser,
 
         if len(unfollow_list) < 1:
             logger.info("There are no any users available to unfollow")
-            return 0
+            return 0, []
 
         #choose the desired order of the elements
         if style == "LIFO":
@@ -368,6 +368,9 @@ def unfollow(browser,
             logger.error("Unfollow loop error:  {}\n".format(str(e)))
 
     elif allFollowing == True:
+
+        unfollow_list = []
+
         logger.info("Unfollowing the users you are following")
         # unfollow from profile
         try:
@@ -379,7 +382,7 @@ def unfollow(browser,
             update_activity()
         except BaseException as e:
             logger.error("following_link error {}".format(str(e)))
-            return 0
+            return 0, []
 
         #scroll down the page to get sufficient amount of usernames
         get_users_through_dialog(browser, None, username, amount,
@@ -409,6 +412,9 @@ def unfollow(browser,
         not_found = []
 
         for button, person in user_info:
+            unfollow_list.append(person)
+
+        for button, person in user_info:
             if person not in automatedFollowedPool["all"]:
                 not_found.append(person)
             elif (person in automatedFollowedPool["all"] and
@@ -422,7 +428,7 @@ def unfollow(browser,
 
         if len(user_info) < 1:
             logger.info("There are no any users to unfollow")
-            return 0
+            return 0, []
         elif len(user_info) < amount:
             logger.info("Could not grab requested amount of usernames to unfollow:  "
                 "{}/{}  ~using available amount".format(len(user_info), amount))
@@ -493,7 +499,7 @@ def unfollow(browser,
     else:
         logger.info("Please select a proper unfollow method!  ~leaving unfollow activity\n")
 
-    return unfollowNum
+    return unfollowNum, unfollow_list
 
 
 def follow_user(browser, login, user_name, blacklist, logger, logfolder):
@@ -780,7 +786,7 @@ def follow_through_dialog(browser,
 
                 browser.get('https://www.instagram.com/' + person)
                 userid = browser.execute_script("return window._sharedData.entry_data.ProfilePage[0].graphql.user.id")
-                
+
                 logtime = datetime.now().strftime('%Y-%m-%d %H:%M')
                 log_followed_pool(login, person, logger, logfolder, logtime, userid)
 

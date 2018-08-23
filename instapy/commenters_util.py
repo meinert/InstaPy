@@ -5,11 +5,11 @@ from re import findall
 from datetime import datetime, timedelta
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys 
-from .util import get_number_of_posts
-from .util import click_element
-from .util import update_activity
-from .util import web_adress_navigator
-from .util import username_url_to_username
+from util import get_number_of_posts
+from util import click_element
+from util import update_activity
+from util import web_adress_navigator
+from util import username_url_to_username
 import random
 
 def check_exists_by_xpath(browser, xpath):

@@ -11,9 +11,9 @@ from contextlib import contextmanager
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import WebDriverException
 
-from .time_util import sleep
-from .time_util import sleep_actual
-from .database_engine import get_database
+from time_util import sleep
+from time_util import sleep_actual
+from database_engine import get_database
 
 
 
