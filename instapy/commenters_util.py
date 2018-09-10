@@ -292,7 +292,7 @@ def likers_from_photo(browser, amount=20):
             sleep(1)
             follow_buttons = dialog.find_elements_by_xpath(
             "//div/div/button[text()='Follow']")
-            print ("Scrolling down... ",previous_len,"->", len(follow_buttons) ," / ",amount) 
+            print ("Scrolling down... ", previous_len, "->", len(follow_buttons) , " / ", amount)
 
         person_list = []
         for person in follow_buttons:

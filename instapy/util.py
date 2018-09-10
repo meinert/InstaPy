@@ -414,8 +414,6 @@ def delete_line_from_file(filepath, lineToDelete, logger):
     except BaseException as e:
         logger.error("delete_line_from_file error {}".format(str(e)))
 
-
-
 def scroll_bottom(browser, element, range_int):
     # put a limit to the scrolling
     if range_int > 50:
@@ -429,7 +427,6 @@ def scroll_bottom(browser, element, range_int):
         sleep(1)
 
     return
-
 
 
 def click_element(browser, element, tryNum=0):
