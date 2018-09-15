@@ -116,3 +116,6 @@ all_unfollowers.py
 nonfollower_clean.py
 test.py
 
+q2.py
+logs/followRestriction.json
+logs/run.txt

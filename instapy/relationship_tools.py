@@ -19,7 +19,8 @@ def get_followers(browser,
                       live_match,
                        store_locally,
                         logger,
-                         logfolder):
+                         logfolder,
+                            debug=False):
     """ Get entire list of followers using graphql queries. """
     if username not in relationship_data:
         relationship_data[username] = {"all_following":[], "all_followers":[]}
@@ -208,9 +209,15 @@ def get_followers(browser,
                                 (sleep_t, "seconds"))
     sleep_n = float("{0:.4f}".format(sleep_n))
 
-    print('')
-    logger.info("Zz :[ time to take a good nap  ~sleeping {} {}".format(sleep_n, sleep_s))
-    sleep(sleep_t)
+
+    if debug:
+        print('')
+        logger.info("Qucik nap -DEBUG MODE")
+        sleep(2)
+    else:
+        print('')
+        logger.info("Zz :[ time to take a good nap  ~sleeping {} {}".format(sleep_n, sleep_s))
+        sleep(sleep_t)
     logger.info("Yawn :] let's go!\n")
 
     return all_followers

@@ -185,7 +185,7 @@ def unfollow(browser,
             if unfollow_track == "nonfollowers":
                 all_followers = get_followers(browser, username, "full", relationship_data, False, True, logger, logfolder)
                 loyal_users = [user for user in unfollow_list if user in all_followers]
-                logger.info("Found {} loyal followers!  ~will not unfollow them".format(len(loyal_users)))
+                logger.info("Found {} loyal followers among the eligble users to unfollow!  ~will not unfollow them".format(len(loyal_users)))
                 unfollow_list = [user for user in unfollow_list if user not in loyal_users]
 
             elif unfollow_track != "all":
