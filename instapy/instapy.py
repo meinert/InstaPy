@@ -37,7 +37,7 @@ from time_util import sleep
 from time_util import set_sleep_percentage
 from util import get_active_users
 from util import validate_username
-from util import web_adress_navigator
+from util import web_address_navigator
 from util import interruption_handler
 from util import highlight_print
 from util import dump_record_activity
@@ -46,7 +46,7 @@ from unfollow_util import get_given_user_following
 from unfollow_util import unfollow
 from unfollow_util import unfollow_user
 from unfollow_util import follow_user
-from unfollow_util import follow_given_user
+#from unfollow_util import follow_given_user
 from unfollow_util import follow_restriction
 from unfollow_util import dump_follow_restriction
 from unfollow_util import set_automated_followed_pool
