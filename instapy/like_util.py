@@ -4,15 +4,15 @@ import re
 from re import findall
 from selenium.webdriver.common.keys import Keys
 
-from time_util import sleep
-from util import format_number
-from util import add_user_to_blacklist
-from util import click_element
-from util import is_private_profile
-from util import update_activity
-from util import web_address_navigator
-from util import get_number_of_posts
-from quota_supervisor import quota_supervisor
+from .time_util import sleep
+from .util import format_number
+from .util import add_user_to_blacklist
+from .util import click_element
+from .util import is_private_profile
+from .util import update_activity
+from .util import web_address_navigator
+from .util import get_number_of_posts
+from .quota_supervisor import quota_supervisor
 
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
