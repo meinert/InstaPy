@@ -7,7 +7,7 @@ import random
 import json
 
 from time_util import sleep
-from util import web_adress_navigator
+from util import web_address_navigator
 from util import get_relationship_counts
 from util import interruption_handler
 
@@ -31,7 +31,7 @@ def get_followers(browser,
     logger.info("Retrieving {} `Followers` data of {} {}".format(tense, username, grab_info))
 
     user_link = "https://www.instagram.com/{}/".format(username)
-    web_adress_navigator(browser, user_link)
+    web_address_navigator(browser, user_link)
 
     # Get followers count
     followers_count, following_count = get_relationship_counts(browser, username, logger)
@@ -68,6 +68,7 @@ def get_followers(browser,
     sc_rolled = 0
     grab_notifier = False
     local_read_failure = False
+    passed_time = "time loop"
 
     try:
         has_next_data = True
@@ -104,7 +105,7 @@ def get_followers(browser,
                 sc_rolled_all = graphql_queries[username][query_date]["sc_rolled"]
 
         except Exception as exc:
-            logger.info("Error occured while getting `scroll` data from graphql_queries.json\n{}\n".format(exc.encode("utf-8")))
+            logger.info("Error occured while getting `scroll` data from graphql_queries.json\n{}\n".format(str(exc).encode("utf-8")))
             local_read_failure = True
 
         start_time = time.time()
@@ -172,7 +173,7 @@ def get_followers(browser,
                                 json.dump(graphql_queries, graphql_queries_file)
                     except Exception as exc:
                         print('\n')
-                        logger.info("Error occured while writing `scroll` data to graphql_queries.json\n{}\n".format(exc.encode("utf-8")))
+                        logger.info("Error occured while writing `scroll` data to graphql_queries.json\n{}\n".format(str(exc).encode("utf-8")))
 
                 #take breaks gradually
                 if sc_rolled > 91:
@@ -183,7 +184,7 @@ def get_followers(browser,
 
     except BaseException as exc:
         print('\n')
-        logger.info("Unable to get `Followers` data:\n\t{}\n".format(exc.encode("utf-8")))
+        logger.info("Unable to get `Followers` data:\n\t{}\n".format(str(exc).encode("utf-8")))
 
     #remove possible duplicates
     all_followers = sorted(set(all_followers), key=lambda x:all_followers.index(x))
@@ -241,7 +242,7 @@ def get_following(browser,
     logger.info("Retrieving {} `Following` data of {} {}".format(tense, username, grab_info))
 
     user_link = "https://www.instagram.com/{}/".format(username)
-    web_adress_navigator(browser, user_link)
+    web_address_navigator(browser, user_link)
 
     # Get following count
     followers_count, following_count = get_relationship_counts(browser, username, logger)
@@ -278,6 +279,7 @@ def get_following(browser,
     sc_rolled = 0
     grab_notifier = False
     local_read_failure = False
+    passed_time = "time loop"
 
     try:
         has_next_data = True
@@ -308,7 +310,7 @@ def get_following(browser,
                     graphql_queries[username][query_date] = {"sc_rolled":0}
                 sc_rolled_all = graphql_queries[username][query_date]["sc_rolled"]
         except Exception as exc:
-            logger.info("Error occured while getting `scroll` data from graphql_queries.json\n{}\n".format(exc.encode("utf-8")))
+            logger.info("Error occured while getting `scroll` data from graphql_queries.json\n{}\n".format(str(exc).encode("utf-8")))
             local_read_failure = True
 
         start_time = time.time()
@@ -376,7 +378,7 @@ def get_following(browser,
                                 json.dump(graphql_queries, graphql_queries_file)
                     except Exception as exc:
                         print('\n')
-                        logger.info("Error occured while writing `scroll` data to graphql_queries.json\n{}\n".format(exc.encode("utf-8")))
+                        logger.info("Error occured while writing `scroll` data to graphql_queries.json\n{}\n".format(str(exc).encode("utf-8")))
 
                 #take breaks gradually
                 if sc_rolled > 91:
@@ -387,7 +389,7 @@ def get_following(browser,
 
     except BaseException as exc:
         print('\n')
-        logger.info("Unable to get `Following` data:\n\t{}\n".format(exc.encode("utf-8")))
+        logger.info("Unable to get `Following` data:\n\t{}\n".format(str(exc).encode("utf-8")))
 
     #remove possible duplicates
     all_following = sorted(set(all_following), key=lambda x:all_following.index(x))
@@ -672,7 +674,7 @@ def store_followers_data(username, grab, grabbed_followers, logger, logfolder):
         logger.info("Stored `Followers` data at {} local file".format(final_file))
 
     except Exception as exc:
-        logger.info("Failed to store `Followers` data in a local file :Z\n{}".format(exc.encode("utf-8")))
+        logger.info("Failed to store `Followers` data in a local file :Z\n{}".format(str(exc).encode("utf-8")))
 
 
 def store_following_data(username, grab, grabbed_following, logger, logfolder):
@@ -698,7 +700,7 @@ def store_following_data(username, grab, grabbed_following, logger, logfolder):
         logger.info("Stored `Following` data at {} local file".format(final_file))
 
     except Exception as exc:
-        logger.info("Failed to store `Following` data in a local file :Z\n{}".format(exc.encode("utf-8")))
+        logger.info("Failed to store `Following` data in a local file :Z\n{}".format(str(exc).encode("utf-8")))
 
 
 def store_all_unfollowers(username, all_unfollowers, logger, logfolder):
@@ -724,7 +726,7 @@ def store_all_unfollowers(username, all_unfollowers, logger, logfolder):
         logger.info("Stored all Unfollowers data at {} local file\n".format(final_file))
 
     except Exception as exc:
-        logger.info("Failed to store all Unfollowers data in a local file :Z\n{}\n".format(exc.encode("utf-8")))
+        logger.info("Failed to store all Unfollowers data in a local file :Z\n{}\n".format(str(exc).encode("utf-8")))
 
 
 def store_active_unfollowers(username, active_unfollowers, logger, logfolder):
@@ -750,7 +752,7 @@ def store_active_unfollowers(username, active_unfollowers, logger, logfolder):
         logger.info("Stored active Unfollowers data at {} local file\n".format(final_file))
 
     except Exception as exc:
-        logger.info("Failed to store active Unfollowers data in a local file :Z\n{}\n".format(exc.encode("utf-8")))
+        logger.info("Failed to store active Unfollowers data in a local file :Z\n{}\n".format(str(exc).encode("utf-8")))
 
 
 def store_nonfollowers(username, followers_size, following_size, nonfollowers, logger, logfolder):
@@ -777,7 +779,7 @@ def store_nonfollowers(username, followers_size, following_size, nonfollowers, l
         logger.info("Stored Nonfollowers data at {} local file\n".format(final_file))
 
     except Exception as exc:
-        logger.info("Failed to store Nonfollowers data in a local file :Z\n{}\n".format(exc.encode("utf-8")))
+        logger.info("Failed to store Nonfollowers data in a local file :Z\n{}\n".format(str(exc).encode("utf-8")))
 
 
 def store_fans(username, followers_size, following_size, fans, logger, logfolder):
@@ -806,7 +808,7 @@ def store_fans(username, followers_size, following_size, fans, logger, logfolder
         logger.info("Stored Fans data at {} local file\n".format(final_file))
 
     except Exception as exc:
-        logger.info("Failed to store Fans data in a local file :Z\n{}\n".format(exc.encode("utf-8")))
+        logger.info("Failed to store Fans data in a local file :Z\n{}\n".format(str(exc).encode("utf-8")))
 
 
 def store_mutual_following(username, followers_size, following_size, mutual_following, logger, logfolder):
@@ -835,7 +837,7 @@ def store_mutual_following(username, followers_size, following_size, mutual_foll
         logger.info("Stored Mutual Following data at {} local file\n".format(final_file))
 
     except Exception as exc:
-        logger.info("Failed to store Mutual Following data in a local file :Z\n{}\n".format(exc.encode("utf-8")))
+        logger.info("Failed to store Mutual Following data in a local file :Z\n{}\n".format(str(exc).encode("utf-8")))
 
 
 def load_followers_data(username, compare_by, compare_track, logger, logfolder):
@@ -1002,6 +1004,6 @@ def progress_tracker(current_value, highest_value, initial_time, logger):
         sys.stdout.flush()
 
     except Exception as exc:
-        logger.info("Error occured with Progress Tracker:\n{}".format(exc))
+        logger.info("Error occured with Progress Tracker:\n{}".format(str(exc).encode("utf-8")))
 
 

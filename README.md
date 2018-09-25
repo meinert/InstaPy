@@ -55,6 +55,7 @@ Table of Contents
   * [Like by Locations](#like-by-locations)
   * [Like by Tags](#like-by-tags)
   * [Like by Feeds](#like-by-feeds)
+  * [Mandatory Words](#mandatory-words)
   * [Restricting Likes](#restricting-likes)
   * [Ignoring Users](#ignoring-users)
   * [Ignoring Restrictions](#ignoring-restrictions)
@@ -63,6 +64,7 @@ Table of Contents
   * [Smart Hashtags](#smart-hashtags)
   * [Follow/Unfollow/exclude not working?](#followunfollowexclude-not-working)
   * [Bypass Suspicious Login Attempt](#bypass-suspicious-login-attempt)
+  * [Quota Supervisor](#quota-supervisor)
 * [Relationship tools](#relationship-tools)
   * [Grab Followers of a user](#grab-followers-of-a-user)
   * [Grab Following of a user](#grab-following-of-a-user)
@@ -70,7 +72,6 @@ Table of Contents
   * [Pick Nonfollowers of a user](#pick-nonfollowers-of-a-user)
   * [Pick Fans of a user](#pick-fans-of-a-user)
   * [Pick Mutual Following of a user](#pick-mutual-following-of-a-user)
-* [Third Party InstaPy GUI for Windows](#third-party-instapy-gui-for-windows)
 * [Use a proxy](#use-a-proxy)
 * [Switching to Firefox](#switching-to-firefox)
 * [Emoji Support](#emoji-support)
@@ -168,15 +169,15 @@ Execute it:
 $ python quickstart.py
 ```
 
-### Or use one of our GUIs
+### Or use our GUI
 
-**[1. Official Cross Platform GUI](https://github.com/ahmadudin/electron-instaPy-GUI)**
+[1. Official Cross Platform GUI](https://github.com/ahmadudin/electron-instaPy-GUI)
 
 [<img src="https://raw.githubusercontent.com/ahmadudin/ahmadudin.github.io/master/assets/images/screencapture1.PNG" width="400" />](https://github.com/ahmadudin/electron-instaPy-GUI)
 
-[2. Third Party InstaPy GUI for Windows](https://github.com/Nemixalone/GUI-tool-for-InstaPy-script)
+[2. Session scheduling with Telegram](https://github.com/Tkd-Alex/Telegram-InstaPy-Scheduling)
 
-[3. Session scheduling with Telegram](https://github.com/Tkd-Alex/Telegram-InstaPy-Scheduling)
+[3. InstaPy-Light, a light version of InstaPy](https://github.com/converge/InstaPy-Light)
 
 ## InstaPy Available Features
 
@@ -373,7 +374,7 @@ session.interact_user_following(['natgeo'], amount=10, randomize=True)
 ### Interact with someone else's followers
 
 ```python
-# Interact with the people that a given user is following
+# Interact with the people that a given user is followed by
 # set_do_comment, set_do_follow and set_do_like are applicable
 
 session.set_user_interact(amount=5, randomize=True, percentage=50, media='Photo')
@@ -701,6 +702,15 @@ session.set_smart_hashtags(['cycling', 'roadbike'], limit=3, sort='top', log_tag
 session.like_by_tags(amount=10, use_smart_hashtags=True)
 ```
 
+### Mandatory Words
+
+```python
+session.set_mandatory_words(['#food', '#instafood'])
+```
+
+`.set_mandatory_words` searches the description and owner comments for words and
+will like the image if **all** of those words are in there
+
 ### Restricting Likes
 
 ```python
@@ -767,6 +777,91 @@ It will login to your account, now you can set bypass_suspicious_attempt to Fals
 
 
 
+### Quota Supervisor
+###### Take full control of the actions with the most sophisticated approaches
+
+```python
+session.set_quota_supervisor(enabled=True, sleep_after=["likes", "comments_d", "follows", "unfollows", "server_calls_h"], sleepyhead=True, stochastic_flow=True, notify_me=True,
+                              peak_likes=(57, 585),
+                               peak_comments=(21, 182),
+                                peak_follows=(48, None),
+                                 peak_unfollows=(35, 402),
+                                  peak_server_calls=(None, 4700))
+```
+#### Parameters:
+`enabled`: put `True` to **activate** or `False` to **deactivate** supervising any time
+
+
+`peak_likes`: the **first value** indicates the **hourly** and the **second** indicates the **daily** peak value  
++ _e.g._ in `peak_likes=(66, 700)` - `66` is the **hourly**, and `700` is the **daily** peak value  
+_such as_,
+    + `peak_server_calls=(500, 4745)` will _supervise_ server calls with **hourly** peak of `500` and **daily** peak of `4745`
+    + `peak_likes=(70, None)` will _supervise_ only hourly likes with the peak of `70`
+    + `peak_unfollows=(None, 350)` will _supervise_ only daily unfollows with the peak of `350`
+    + `peak_comments=(None, None)` will not _supervise_ comments at all
+
+If you **don't want to** _supervise_ likes **at all**, simply **remove** `peak_likes` parameter **OR** use `peak_likes=(None, None)`.  
+_Once_ likes **reach** peak, it will **jump** every other like, _yet_, **will do all available actions** (_e.g. follow or unfollow_).  
++ Only `server calls` **does not** jump, it exits the program **once reaches the peak**.
+> Although, you can put server calls to sleep once reaches peak, read `sleep_after` parameter.  
++ _Every action_ will be **jumped** separately after reaching it's peak, _except_ comments. Cos commenting without a like isn't welcomed that's why as like peak is reached, it will jump comments, too.
+
+**Notice**: `peak_likes=(50)` will not work, use `peak_likes=(50, None)` to supervise **hourly** peak and `peak_likes=(None, 50)` for **daily** peak.  
+>_Same **form**_ **applies** to **all** actions. Just specify the peaks in desired intervals- **hourly** or **daily** you want to _supervise_.
+ 
+   
+`sleep_after`: is used to put **InstaPy** to _sleep_ **after reaching peak** _rather than_ **jumping the action** (_or exiting- **for** server calls_)  
+_Any action_ can be included `["likes", "comments", "follows", "unfollows", "server_calls"]`.  
+_As if_ you want to put _sleep_ **only after** reaching **hourly** like peak, put `"likes_h"` **OR** put `"likes_d"` for _sleeping_ **only after** reaching **daily** like peak.  
+_such as_,
++ `sleep_after=['follows_h']` will _sleep_ after reaching **hourly** follow peak  
++ `sleep_after=['likes_d', 'follows', 'server_calls_h']` will _sleep_ after reaching **daily** like peak, follow peaks (_**hourly** and **daily**_) and **hourly** server call peak.  
+
+**Notice**: there can be _either_ `"likes"` (_for both **hourly** and **daily** sleep_) **OR** `"likes_h"` (_for **hourly** sleep only_) **OR** `"likes_d"` (_for **daily** sleep only_).  
+>_Once_ gone to sleep, it will **wake up** as _new_ **hour**/**day** (_according to the interval_) arrives AND **continue** the activity.
+
+
+`sleepyhead`: can help to _sound_ **more humanly** which will **wake up a little bit later** in a randomly chosen time interval around accurate wake up time.
+>_e.g._, if remaining time is `17` minutes, it will sleep `20` minutes instead (_random values each time_)..
+
+
+`stochastic_flow`: can provide _smooth_ peak value generation by your original values.  
++ Every ~**hour**/**day** it will generate peaks **at close range** _around_ your **original peaks** (_but below them_).  
+> _e.g._, your peak likes **hourly** is `45`, next hour that peak will be `39`, the next `43`, etc.
+
+
+`notify_me`: sends **toast notifications** (_directly to your OS_) _about_ the **important states of** _supervisor_- **sleep**, **wake up** and **exit** messages.
+
+#### Mini-Examples:
++ Claudio has written **a new 😊 quickstart** script where it **mostly** _put likes and comments_. He wants the program to **comment safely** cos he is _afraid of exceeding_ **hourly** & **daily** comment limits,
+```python
+session.set_quota_supervisor(enabled=True, peak_comments=(21, 240))
+```
+>_That's it! When it reaches the comments peak, it will just jump all of the comments and will again continue to put comments when is available [in the next  hour/day]_.
+
++ Alicia has a **24**/**7** 🕦 working **quickstart** script and **would like to** keep _server calls_ in control to AVOID **excessive amount of requests** to the _server_ in **hourly** basis, also,
+    + **wants** the program to **sleep after** reaching **hourly** _server calls_ peak: **adds** `"server_calls_h"` into `sleep_after` parameter
+    + **wants** the program to **wake up** _a little bit later_ than real sleep time [once reaches the peaks]: **uses** `sleepyhead=True` parameter
+```python
+session.set_quota_supervisor(enabled=True, peak_server_calls=(490, None) sleep_after=["server_calls_h"], sleepyhead=True)
+```
+>_It will sleep after **hourly** server calls reaches its peak given - `490` and **never allow** one more extra request to the server out of the peak and **wake up** when **new hour** comes in WHILST **daily** server calls **will not be** supervised at all- as Alicia wishes_.
+
++ Sam has a _casual_ 🦆 **quickstart** script full of _follow_/_unfollow_ features and he wants to **do it safely**, also,
+    + is **gonna** run on local computer and **wants** to receive **toast notifications** 😋 on _supervising states_: **uses** `notify_me` parameter
+    + **wants** QS to _randomize_ his `pre-defined` peak values [at close range] each new _hour_/_day_: **uses** `stochastic_flow=True` parameter
+    + **wants** the program to sleep after reaching **hourly** _follow_ peak and **daily** _unfollow_ peak: **adds** `"follows_h"` and `"unfollows_d"`into `sleep_after` parameter
+```python
+session.set_quota_supervisor(enabled=True, peak_follows=(56, 660), peak_unfollows=(49, 550) sleep_after=["follows_h", "unfollows_d"], stochastic_flow=True, notify_me=True)
+```
+
+---
+>**Big Hint**: _Find your NEED_ 🤔 _and supervise it!_  
++ _EITHER_ **fully** configure QS to supervise **all** of the _actions_ all time  
++ _OR_ **just** supervise the desired _action_(_s_) in desired _interval_(_s_) [**hourly** and/or **daily**] per your need
+
+
+
 ## Relationship tools
 
 
@@ -801,7 +896,7 @@ Every time you grab `Followers` data in `"full"` range of **any** user, it is al
     + As a **result**, `live_match=False` saves lots of `precious time` and `server requests`.  
 + `live_match=True`:  
     + It will **always** load `live` data from the server at _requested range_.
-    
+
 `store_locally`:  
 Gives the _option_ to `save` the loaded `Followers` data in a **local storage**  
 The files will be saved _into_ your **logs folder**, `~/InstaPy/logs/YourOwnUsername/relationship_data/Popeye/followers/` directory.  
@@ -855,13 +950,13 @@ Every time you grab `Following` data in `"full"` range of **any** user, it is al
 
 + `live_match=False`:
     + If the user **already do have** a `Following` data loaded _earlier_ in the **same** session, it will run a _smart_ `data-matching` _algorithm_.  
-    And **there**, it will **load only the new data** _from the server_ and then **return a compact result** of _current data_.  
+    And **there**, it will **load only the new data** _from the server_ and then **return a compact result** of _current data_.
     The _algorithm_ **works like**: _load the usernames **until hits the** ones from the **previous query** at certain amount_.  
     + **Also if** the `live_match` is `False` and the user has **no any** _sessional_ `Following` data, **then** it will load `live` data at _requested range_.
     + As a **result**, `live_match=False` saves lots of `precious time` and `server requests`.  
 + `live_match=True`:  
     + It will **always** load `live` data from the server at _requested range_.
-    
+
 `store_locally`:  
 Gives the _option_ to `save` the loaded `Following` data in a **local storage**  
 The files will be saved _into_ your **logs folder**, `~/InstaPy/logs/YourOwnUsername/relationship_data/lazy.smurf/following/` directory.  
@@ -922,7 +1017,7 @@ Defines the track to choose a file to compare for `"day"`, `"month"` and `"year"
     + `"first"` selects the first record from the given `day`, `month` or `year`
     + `"median"` selects the median (_the one in the middle_) record from the given `day`, `month` or `year`
     + `"last"` selects the last record from the given `day`, `month` or `year`
-    
+
 `live_match`:  
 Defines the method of grabbing **new** `Followers` data to compare with **existing** data
 > **Knowledge Base**:  
@@ -936,7 +1031,7 @@ Every time you grab `Followers` data in `"full"` range of **any** user, it is al
     + As a **result**, `live_match=False` saves lots of `precious time` and `server requests`.  
 + `live_match=True`:  
     + It will **always** load `live` data from the server at _requested range_.
-    
+
 `store_locally`:  
 Gives the _option_ to `save` the loaded `Unfollowers` data in a **local storage**  
 There will be 2 files saved in their own directory:  
@@ -946,7 +1041,7 @@ There will be 2 files saved in their own directory:
 + `active_unfollowers`:    
     + Will store only the unfollowers WHOM you are currently following.  
     + Its files will be saved at **logs folder**, `~/InstaPy/logs/YourOwnUsername/relationship_data/Bernard_bear/unfollowers/active_unfollowers/` directory.    
-  
+
 Sample **filename** `03-06-2018~all~75.json`:  
 + `03-06-2018` means the **time** of the data acquisition.
 + `"all"` means that it is all of the unfollowers data;  
@@ -1017,7 +1112,7 @@ There are **several** `use cases` of this tool for **various purposes**.
 
     #now Scooby Doo will tell his friend Shaggy about this, who knows, maybe Shaggy will unfollow them all or even add to block :D
     ```  
-  
+
 
 
 ### Pick Fans of a user
