@@ -13,10 +13,10 @@ _NOTE: If you add an empty file named ssh to the boot directory, ssh will be ena
 1. cd Projects
 1. git clone https://github.com/timgrossmann/InstaPy.git
 1. cd InstaPy
-1. sudo pip install . (encountered some errors and resulting 3 commands below (13-15), all may not be necessary)
+1. sudo pip install . (for Python 2.x) or sudo pip3 install . (for Python 3.x) (encountered some errors and resulting 3 commands below (13-15), all may not be necessary)
 1. sudo apt-get build-dep python-imaging
 1. sudo apt-get install libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev
-1. sudo pip install .
+1. sudo pip install . (for Python 2.x) or sudo pip3 install . (for Python 3.x)
 1. sudo apt-get install tightvncserver (to view GUI from MacBook)
 
 ## For Chrome
@@ -56,9 +56,9 @@ Pi2.2 sudo dpkg -i firefox_49.0+build4-0ubuntu0.14.04.1_armhf.deb
 
 > Encountered some errors when trying to run the quickstart.py and ran the next 3 commands (all may not be necessary)
 
-24. sudo pip install future
+24. sudo pip install future (pip3 for python 3.x)
 25. sudo apt-get install xvfb
-26. sudo pip install pyvirtualdisplay
+26. sudo pip install pyvirtualdisplay (pip3 for python 3.x)
 27. sudo reboot (may not be required, but no harm)
 
 
