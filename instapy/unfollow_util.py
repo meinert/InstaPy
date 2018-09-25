@@ -7,27 +7,27 @@ import csv
 import sqlite3
 from math import ceil
 
-from time_util import sleep
-from util import delete_line_from_file
-from util import scroll_bottom
-from util import format_number
-from util import update_activity
-from util import add_user_to_blacklist
-from util import click_element
-from util import web_address_navigator
-from util import get_relationship_counts
-from util import emergency_exit
-from util import load_user_id
-from util import get_username
-from util import find_user_id
-from util import explicit_wait
-from print_log_writer import log_followed_pool
-from print_log_writer import log_uncertain_unfollowed_pool
-from print_log_writer import log_record_all_unfollowed
-from relationship_tools import get_followers
-from relationship_tools import get_nonfollowers
-from database_engine import get_database
-from quota_supervisor import quota_supervisor
+from .time_util import sleep
+from .util import delete_line_from_file
+from .util import scroll_bottom
+from .util import format_number
+from .util import update_activity
+from .util import add_user_to_blacklist
+from .util import click_element
+from .util import web_address_navigator
+from .util import get_relationship_counts
+from .util import emergency_exit
+from .util import load_user_id
+from .util import get_username
+from .util import find_user_id
+from .util import explicit_wait
+from .print_log_writer import log_followed_pool
+from .print_log_writer import log_uncertain_unfollowed_pool
+from .print_log_writer import log_record_all_unfollowed
+from .relationship_tools import get_followers
+from .relationship_tools import get_nonfollowers
+from .database_engine import get_database
+from .quota_supervisor import quota_supervisor
 
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
@@ -94,8 +94,6 @@ def set_automated_followed_pool(username, unfollow_after, logger, logfolder):
 
     return automatedFollowedPool
 
-
-
 def get_following_status(browser, person, logger):
     """ Verify if you are following the user in the loaded page """
     following = None
@@ -103,7 +101,7 @@ def get_following_status(browser, person, logger):
 
     try:
         follow_button = browser.find_element_by_xpath(
-            "//*[contains(text(), 'Follow')]")
+            "//button[contains(text(), 'Follow')]")
 
         if follow_button.text == 'Following':
             following = True
@@ -114,7 +112,7 @@ def get_following_status(browser, person, logger):
 
             else:
                 follow_button = browser.find_element_by_xpath(
-                    "//*[contains(text(), 'Requested')]")
+                    "//button[contains(text(), 'Requested')]")
 
                 if follow_button.text == "Requested":
                     following = "Requested"
@@ -1125,17 +1123,22 @@ def unfollow_user(browser, track, username, person, person_id, button, relations
 
 
         if following in [True, "Requested"]:
-            click_element(browser, follow_button)
-            sleep(4)
-            confirm_unfollow(browser)
-            # double check the following state
-            follow_button = browser.find_element_by_xpath(
-                                "//*[contains(text(), 'Follow')]")
-            # if the button still has not changed it can be a temporary block
-            if follow_button.text not in ['Follow', 'Follow Back']:
-                logger.warning("--> Unfollow error!\t~username '{}' might be blocked from unfollowing\n"
-                                   .format(username))
-                return False, "shadow ban"
+            try:
+                click_element(browser, follow_button)
+                sleep(4)
+                confirm_unfollow(browser)
+                # double check the following state
+                sleep(2)
+                follow_button = browser.find_element_by_xpath(
+                                    "//button[contains(text(), 'Follow')]")
+                # if the button still has not changed it can be a temporary block
+                if follow_button.text not in ['Follow', 'Follow Back']:
+                    logger.warning("--> Unfollow error!\t~username '{}' might be blocked from unfollowing\n"
+                                       .format(username))
+                    return False, "shadow ban"
+            except Exception as e:
+                print("Problem unfollowing. Push button fail????")
+                return False, "uncertain"
 
 
         elif following == False:
@@ -1234,6 +1237,3 @@ def get_user_id(browser, track, username, logger):
         user_id = find_user_id(browser, track, username, logger)
 
     return user_id
-
-
-

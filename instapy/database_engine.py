@@ -1,7 +1,7 @@
 import os
 import sqlite3
 
-from settings import Settings
+from .settings import Settings
 
 
 

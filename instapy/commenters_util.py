@@ -7,11 +7,11 @@ import collections
 from operator import itemgetter, attrgetter
 from selenium.webdriver.common.keys import Keys
 
-from util import get_number_of_posts
-from util import click_element
-from util import update_activity
-from util import web_address_navigator
-from util import username_url_to_username
+from .util import get_number_of_posts
+from .util import click_element
+from .util import update_activity
+from .util import web_address_navigator
+from .util import username_url_to_username
 
 from selenium.common.exceptions import NoSuchElementException
 

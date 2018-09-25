@@ -6,11 +6,11 @@ from sys import platform
 import sqlite3
 from plyer import notification
 
-from time_util import sleep_actual
-from time_util import get_time
-from database_engine import get_database
-from settings import Settings
-from settings import Storage
+from .time_util import sleep_actual
+from .time_util import get_time
+from .database_engine import get_database
+from .settings import Settings
+from .settings import Storage
 
 
 

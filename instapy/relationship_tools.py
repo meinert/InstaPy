@@ -6,10 +6,10 @@ import glob
 import random
 import json
 
-from time_util import sleep
-from util import web_address_navigator
-from util import get_relationship_counts
-from util import interruption_handler
+from .time_util import sleep
+from .util import web_address_navigator
+from .util import get_relationship_counts
+from .util import interruption_handler
 
 
 def get_followers(browser,

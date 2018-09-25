@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """Module which handles the commenting features"""
 from random import choice
-from time_util import sleep
-from util import update_activity
-from util import add_user_to_blacklist
-from util import format_number
+from .time_util import sleep
+from .util import update_activity
+from .util import add_user_to_blacklist
+from .util import format_number
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidElementStateException
 
