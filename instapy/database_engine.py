@@ -4,29 +4,30 @@ import sqlite3
 from .settings import Settings
 
 
-
 SELECT_FROM_PROFILE_WHERE_NAME = "SELECT * FROM profiles WHERE name = :name"
 
 INSERT_INTO_PROFILE = "INSERT INTO profiles (name) VALUES (?)"
 
-SQL_CREATE_PROFILE_TABLE = """CREATE TABLE IF NOT EXISTS `profiles` (
-                  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-                  `name` TEXT NOT NULL);"""
+SQL_CREATE_PROFILE_TABLE = """
+    CREATE TABLE IF NOT EXISTS `profiles` (
+        `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+        `name` TEXT NOT NULL);"""
 
-SQL_CREATE_RECORD_ACTIVITY_TABLE = """CREATE TABLE IF NOT EXISTS `recordActivity` (
-                  `profile_id` INTEGER REFERENCES `profiles` (id),
-                  `likes` SMALLINT UNSIGNED NOT NULL,
-                  `comments` SMALLINT UNSIGNED NOT NULL,
-                  `follows` SMALLINT UNSIGNED NOT NULL,
-                  `unfollows` SMALLINT UNSIGNED NOT NULL,
-                  `server_calls` INT UNSIGNED NOT NULL,
-                  `created` DATETIME NOT NULL);"""
+SQL_CREATE_RECORD_ACTIVITY_TABLE = """
+    CREATE TABLE IF NOT EXISTS `recordActivity` (
+        `profile_id` INTEGER REFERENCES `profiles` (id),
+        `likes` SMALLINT UNSIGNED NOT NULL,
+        `comments` SMALLINT UNSIGNED NOT NULL,
+        `follows` SMALLINT UNSIGNED NOT NULL,
+        `unfollows` SMALLINT UNSIGNED NOT NULL,
+        `server_calls` INT UNSIGNED NOT NULL,
+        `created` DATETIME NOT NULL);"""
 
-SQL_CREATE_FOLLOW_RESTRICTION_TABLE = """CREATE TABLE IF NOT EXISTS `followRestriction` (
-                  `profile_id` INTEGER REFERENCES `profiles` (id),
-                  `username` TEXT NOT NULL,
-                  `times` TINYINT UNSIGNED NOT NULL);"""
-
+SQL_CREATE_FOLLOW_RESTRICTION_TABLE = """
+    CREATE TABLE IF NOT EXISTS `followRestriction` (
+        `profile_id` INTEGER REFERENCES `profiles` (id),
+        `username` TEXT NOT NULL,
+        `times` TINYINT UNSIGNED NOT NULL);"""
 
 
 def get_database(make=False):
@@ -39,11 +40,10 @@ def get_database(make=False):
 
     if not os.path.isfile(address) or make:
         create_database(address, logger, name)
-    
+
     id = get_profile(name, address, logger) if id is None or make else id
 
     return address, id
-
 
 
 def create_database(address, logger, name):
@@ -54,21 +54,20 @@ def create_database(address, logger, name):
             cursor = connection.cursor()
 
             create_tables(cursor, ["profiles",
-                                  "recordActivity",
-                                  "followRestriction"
-                                  ])
+                                   "recordActivity",
+                                   "followRestriction"])
 
             connection.commit()
 
     except Exception as exc:
         logger.warning(
-            "Wah! Error occured while getting a DB for '{}':\n\t{}".format(name, str(exc).encode("utf-8")))
+            "Wah! Error occurred while getting a DB for '{}':\n\t{}"
+            .format(name, str(exc).encode("utf-8")))
 
     finally:
         if connection:
             # close the open connection
             connection.close()
-
 
 
 def create_tables(cursor, tables):
@@ -82,12 +81,10 @@ def create_tables(cursor, tables):
         cursor.execute(SQL_CREATE_FOLLOW_RESTRICTION_TABLE)
 
 
-
 def verify_database_directories(address):
     db_dir = os.path.dirname(address)
     if not os.path.exists(db_dir):
         os.makedirs(db_dir)
-
 
 
 def validate_database_address():
@@ -101,7 +98,6 @@ def validate_database_address():
     verify_database_directories(address)
 
     return address
-
 
 
 def get_profile(name, address, logger):
@@ -119,7 +115,9 @@ def get_profile(name, address, logger):
                 profile = select_profile_by_username(cursor, name)
 
     except Exception as exc:
-        logger.warning("Heeh! Error occured while getting a DB profile for '{}':\n\t{}".format(name, str(exc).encode("utf-8")))
+        logger.warning(
+            "Heeh! Error occurred while getting a DB profile for '{}':\n\t{}"
+            .format(name, str(exc).encode("utf-8")))
 
     finally:
         if conn:
@@ -131,16 +129,14 @@ def get_profile(name, address, logger):
 
     # assign the id to its child in `Settings` class
     Settings.profile["id"] = id
-    
-    return id
 
+    return id
 
 
 def add_profile(conn, cursor, name):
     cursor.execute(INSERT_INTO_PROFILE, (name,))
     # commit the latest changes
     conn.commit()
-
 
 
 def select_profile_by_username(cursor, name):

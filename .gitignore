@@ -107,12 +107,17 @@ logs/
 # pytest
 .pytest_cache/
 tests/logs
+
+# Pipfile
+Pipfile
+Pipfile.lock
+
+#Custom
 unfollow.py
 meinerttt.py
 master.py
 follow.py
-myLogs/ 
+myLogs/
 all_unfollowers.py
 nonfollower_clean.py
 test.py
-
