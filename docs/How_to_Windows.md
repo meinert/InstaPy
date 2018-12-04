@@ -23,7 +23,7 @@
 - Download and install Microsoft .NET Framework V.3.5.
 - Proceed with standard installation.
 - Restart PC (recommended).
-> [https://www.microsoft.com/it-it/download/details.aspx?id=21]
+> [https://www.microsoft.com/en-us/download/details.aspx?id=21]
 
 ##### 0.5 GitHub Desktop 
 - Download and install newest version of GitHub Desktop. 
@@ -47,12 +47,10 @@
 
 #### 3.x Setup:
 
-##### 3.1 Install Selenium
-- Go to C:\\Program Files (x86)\\Python36-32\\Scripts
+##### 3.1 Install Required Modules
+- Go to your InstaPy directory.
 - press Shift + Right click and open command window (with admin rights !!) and type
-- pip install selenium
-- python -m pip install pyvirtualdisplay
-- py get-pip.py
+- python setup.py install
 
 ##### 3.2 Download the GUI (optional)
 - Download the zip-File from the GUI-tool-for-InstaPy-script.

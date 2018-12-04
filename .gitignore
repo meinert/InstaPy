@@ -111,8 +111,12 @@ unfollow.py
 meinerttt.py
 master.py
 follow.py
-myLogs/ 
+myLogs/
 all_unfollowers.py
 nonfollower_clean.py
 test.py
 
+
+# Pipfile
+Pipfile
+Pipfile.lock
