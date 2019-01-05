@@ -110,6 +110,4 @@ tests/logs
 
 # Pipfile
 Pipfile
-
-# Instances
-z_*
+Pipfile.lock

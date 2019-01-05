@@ -23,7 +23,6 @@
 - Download and install Microsoft .NET Framework V.3.5.
 - Proceed with standard installation.
 - Restart PC (recommended).
-> [https://www.microsoft.com/en-us/download/details.aspx?id=21]
 
 ##### 0.5 GitHub Desktop 
 - Download and install newest version of GitHub Desktop. 
