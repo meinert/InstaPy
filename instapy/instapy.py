@@ -848,8 +848,8 @@ class InstaPy:
 
         return self
 
-    def follow_likers(self, usernames, photos_grab_amount=3, follow_likers_per_photo=3, randomize=True, sleep_delay=600,
-                      interact=False):
+
+    def follow_likers (self, usernames, photos_grab_amount=3, follow_likers_per_photo=3, randomize=True, sleep_delay=600, interact=False, max_followed=None):
         """ Follows users' likers """
         if self.aborting:
             return self
@@ -4735,6 +4735,3 @@ class InstaPy:
                              .format(already_followed))
             self.logger.info("\tInappropriate posts: {}".format(inap_img))
             self.logger.info("\tNot valid users: {}".format(not_valid_users))
-
-
-

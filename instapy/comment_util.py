@@ -7,11 +7,6 @@ from random import choice
 from .time_util import sleep
 from .util import update_activity
 from .util import add_user_to_blacklist
-from .util import click_element
-from .util import get_action_delay
-from .util import explicit_wait
-from .util import extract_text_from_element
-from .util import web_address_navigator
 from .quota_supervisor import quota_supervisor
 
 from .util import format_number
@@ -285,6 +280,3 @@ def get_comments_count(browser, logger):
 
 
     return comments_count, "Success"
-
-
-
