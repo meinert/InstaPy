@@ -107,19 +107,9 @@ logs/
 # pytest
 .pytest_cache/
 tests/logs
-unfollow.py
-meinerttt.py
-master.py
-follow.py
-myLogs/ 
-all_unfollowers.py
-nonfollower_clean.py
-test.py
-
-q2.py
-logs/followRestriction.json
-logs/run.txt
 
 # Pipfile
-#Pipfile
-#Pipfile.lock
+Pipfile
+
+# Instances
+z_*
