@@ -966,6 +966,7 @@ class InstaPy:
         randomize: bool = True,
         sleep_delay: int = 600,
         interact: bool = False,
+        max_followed: int = 100
     ):
         """ Follows users' likers """
         if self.aborting:
