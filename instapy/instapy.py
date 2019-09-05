@@ -120,6 +120,7 @@ class InstaPy:
         geckodriver_path: str = None,
         split_db: bool = False,
         bypass_security_challenge_using: str = "email",
+        load_cookie: bool = True
     ):
         print("InstaPy Version: {}".format(__version__))
         cli_args = parse_cli_args()
@@ -150,6 +151,7 @@ class InstaPy:
         self.page_delay = page_delay
         self.disable_image_load = disable_image_load
         self.bypass_security_challenge_using = bypass_security_challenge_using
+        self.load_cookie = load_cookie
 
         # choose environment over static typed credentials
         self.username = os.environ.get("INSTA_USER") or username
@@ -413,6 +415,7 @@ class InstaPy:
             self.logfolder,
             self.proxy_address,
             self.bypass_security_challenge_using,
+            self.load_cookie
         ):
             message = (
                 "Unable to login to Instagram! "

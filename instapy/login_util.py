@@ -262,6 +262,7 @@ def login_user(
     logfolder,
     proxy_address,
     security_code_to_phone,
+    load_cookie=False
 ):
     """Logins the user with the given username and password"""
     assert username, "Username not provided"
@@ -274,27 +275,30 @@ def login_user(
     web_address_navigator(browser, ig_homepage)
     cookie_loaded = False
 
-    # try to load cookie from username
-    try:
-        for cookie in pickle.load(
-            open("{0}{1}_cookie.pkl".format(logfolder, username), "rb")
-        ):
-            browser.add_cookie(cookie)
-            cookie_loaded = True
-    except (WebDriverException, OSError, IOError):
-        print("Cookie file not found, creating cookie...")
+    if load_cookie:
+        # try to load cookie from username
+        try:
+            for cookie in pickle.load(
+                open("{0}{1}_cookie.pkl".format(logfolder, username), "rb")
+            ):
 
-    # force refresh after cookie load or check_authorization() will FAIL
-    reload_webpage(browser)
+                #browser.add_cookie(cookie)
+                cookie_loaded = True
+        except (WebDriverException, OSError, IOError):
+            print("Cookie file not found, creating cookie...")
 
-    # cookie has been LOADED, so the user SHOULD be logged in
-    # check if the user IS logged in
-    login_state = check_authorization(
-        browser, username, "activity counts", logger, False
-    )
-    if login_state is True:
-        dismiss_notification_offer(browser, logger)
-        return True
+        # force refresh after cookie load or check_authorization() will FAIL
+        reload_webpage(browser)
+
+        # cookie has been LOADED, so the user SHOULD be logged in
+        # check if the user IS logged in
+        login_state = check_authorization(
+            browser, username, "activity counts", logger, False
+        )
+
+        if login_state is True:
+            dismiss_notification_offer(browser, logger)
+            return True
 
     # if user is still not logged in, then there is an issue with the cookie
     # so go create a new cookie..
@@ -462,8 +466,14 @@ def login_user(
     except NoSuchElementException:
         pass
 
+    user_link = "https://www.instagram.com/{}/".format(username)
+    web_address_navigator(browser, user_link)
+
     # wait until page fully load
     explicit_wait(browser, "PFL", [], logger, 5)
+
+    user_link = "https://www.instagram.com/{}/".format(username)
+    web_address_navigator(browser, user_link)
 
     # Check if user is logged-in (If there's two 'nav' elements)
     nav = browser.find_elements_by_xpath(read_xpath(login_user.__name__, "nav"))
