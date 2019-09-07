@@ -20,7 +20,7 @@ def log_follower_num(browser, username, logfolder):
     """Prints and logs the current number of followers to
     a seperate file"""
     user_link = "https://www.instagram.com/{}".format(username)
-    web_address_navigator(browser, user_link)
+    web_address_navigator(browser, logger, user_link)
 
     try:
         followed_by = browser.execute_script(
@@ -54,7 +54,7 @@ def log_following_num(browser, username, logfolder):
     """Prints and logs the current number of followers to
     a seperate file"""
     user_link = "https://www.instagram.com/{}".format(username)
-    web_address_navigator(browser, user_link)
+    web_address_navigator(browser, logger, user_link)
 
     try:
         following_num = browser.execute_script(

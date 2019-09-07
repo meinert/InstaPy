@@ -132,7 +132,7 @@ def validate_username(
 
         # check URL of the webpage, if it already is user's profile page,
         # then do not navigate to it again
-        web_address_navigator(browser, link)
+        web_address_navigator(browser, logger, link)
 
         try:
             username = browser.execute_script(
@@ -300,7 +300,7 @@ def validate_username(
 
     if min_posts or max_posts or skip_private or skip_no_profile_pic or skip_business:
         user_link = "https://www.instagram.com/{}/".format(username)
-        web_address_navigator(browser, user_link)
+        web_address_navigator(browser, logger, user_link)
 
     if min_posts or max_posts:
         # if you are interested in relationship number of posts boundaries
@@ -582,7 +582,7 @@ def get_active_users(browser, username, posts, boundary, logger):
 
     # check URL of the webpage, if it already is user's profile page,
     # then do not navigate to it again
-    web_address_navigator(browser, user_link)
+    web_address_navigator(browser, logger, user_link)
 
     try:
         total_posts = browser.execute_script(
@@ -1054,7 +1054,7 @@ def get_relationship_counts(browser, username, logger):
 
     # check URL of the webpage, if it already is user's profile page,
     # then do not navigate to it again
-    web_address_navigator(browser, user_link)
+    web_address_navigator(browser, logger, user_link)
 
     try:
         followers_count = browser.execute_script(
@@ -1157,7 +1157,7 @@ def get_relationship_counts(browser, username, logger):
     return followers_count, following_count
 
 
-def web_address_navigator(browser, link):
+def web_address_navigator(browser, logger, link):
     """Checks and compares current URL of web page and the URL to be
     navigated and if it is different, it does navigate"""
     current_url = get_current_url(browser)
@@ -1184,6 +1184,8 @@ def web_address_navigator(browser, link):
                 # update server calls
                 update_activity(browser, state=None)
                 sleep(2)
+                if not is_page_available(browser, logger):
+                    print("Error getting page")
                 break
 
             except TimeoutException as exc:
@@ -1492,7 +1494,7 @@ def check_authorization(browser, username, method, logger, notify=True):
             or "https://www.instagram.com/graphql/" in current_url
         ):
             profile_link = "https://www.instagram.com/{}/".format(username)
-            web_address_navigator(browser, profile_link)
+            web_address_navigator(browser, logger, profile_link)
 
         # if user is not logged in, `activity_counts` will be `None`- JS `null`
         try:
@@ -1737,7 +1739,7 @@ def get_username_from_id(browser, user_id, logger):
     variables = {"id": str(user_id), "first": 1}
     post_url = "{}&variables={}".format(graphql_query_URL, str(json.dumps(variables)))
 
-    web_address_navigator(browser, post_url)
+    web_address_navigator(browser, logger, post_url)
     try:
         pre = browser.find_element_by_tag_name("pre").text
     except NoSuchElementException:
@@ -1752,7 +1754,7 @@ def get_username_from_id(browser, user_id, logger):
             post_code = user_data["edges"][0]["node"]["shortcode"]
             post_page = "https://www.instagram.com/p/{}".format(post_code)
 
-            web_address_navigator(browser, post_page)
+            web_address_navigator(browser, logger, post_page)
             username = get_username(browser, "post", logger)
             if username:
                 return username
@@ -1795,7 +1797,7 @@ def get_username_from_id(browser, user_id, logger):
     user_link_by_id = ("https://www.instagram.com/web/friendships/{}/follow/"
                        .format(user_id))
 
-    web_address_navigator(browser, user_link_by_id)
+    web_address_navigator(browser, logger, user_link_by_id)
     username = get_username(browser, "profile", logger)
     """
 
@@ -1804,7 +1806,7 @@ def get_username_from_id(browser, user_id, logger):
 
 def is_page_available(browser, logger):
     """ Check if the page is available and valid """
-    expected_keywords = ["Page Not Found", "Content Unavailable"]
+    expected_keywords = ["Page Not Found", "Content Unavailable", "Problem loading page"]
     page_title = get_page_title(browser, logger)
 
     if any(keyword in page_title for keyword in expected_keywords):
@@ -2110,11 +2112,11 @@ def get_epoch_time_diff(time_stamp, logger):
         return None
 
 
-def is_follow_me(browser, person=None):
+def is_follow_me(browser, logger, person=None):
     # navigate to profile page if not already in it
     if person:
         user_link = "https://www.instagram.com/{}/".format(person)
-        web_address_navigator(browser, user_link)
+        web_address_navigator(browser, logger, user_link)
 
     return getUserData("graphql.user.follows_viewer", browser)
 
@@ -2385,7 +2387,7 @@ def take_rotative_screenshot(browser, logfolder):
 def get_query_hash(browser, logger):
     """ Load Instagram JS file and find query hash code """
     link = "https://www.instagram.com/static/bundles/es6/Consumer.js/1f67555edbd3.js"
-    web_address_navigator(browser, link)
+    web_address_navigator(browser, logger, link)
     page_source = browser.page_source
     # locate pattern value from JS file
     # sequence of 32 words and/or numbers just before ,n=" value

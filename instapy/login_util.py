@@ -272,7 +272,7 @@ def login_user(
         return False
 
     ig_homepage = "https://www.instagram.com"
-    web_address_navigator(browser, ig_homepage)
+    web_address_navigator(browser, logger, ig_homepage)
     cookie_loaded = False
 
     if load_cookie:
@@ -388,6 +388,13 @@ def login_user(
     for _ in range(4):
         update_activity(browser, state=None)
 
+    sleep(3)
+
+    user_link = "https://www.instagram.com/{}/".format(username)
+    web_address_navigator(browser, logger, user_link)
+
+    sleep(3)
+
     dismiss_get_app_offer(browser, logger)
     dismiss_notification_offer(browser, logger)
 
@@ -466,14 +473,8 @@ def login_user(
     except NoSuchElementException:
         pass
 
-    user_link = "https://www.instagram.com/{}/".format(username)
-    web_address_navigator(browser, user_link)
-
     # wait until page fully load
     explicit_wait(browser, "PFL", [], logger, 5)
-
-    user_link = "https://www.instagram.com/{}/".format(username)
-    web_address_navigator(browser, user_link)
 
     # Check if user is logged-in (If there's two 'nav' elements)
     nav = browser.find_elements_by_xpath(read_xpath(login_user.__name__, "nav"))

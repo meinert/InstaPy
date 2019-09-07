@@ -33,7 +33,7 @@ def get_links_from_feed(browser, amount, num_of_search, logger):
 
     # Check URL of the webpage, if it already is in Feeds page, then do not
     # navigate to it again
-    web_address_navigator(browser, feeds_link)
+    web_address_navigator(browser, logger, feeds_link)
 
     for i in range(num_of_search + 1):
         browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -96,7 +96,7 @@ def get_links_for_location(
         media = [media]
 
     location_link = "https://www.instagram.com/explore/locations/{}".format(location)
-    web_address_navigator(browser, location_link)
+    web_address_navigator(browser, logger, location_link)
 
     top_elements = browser.find_element_by_xpath(
         read_xpath(get_links_for_location.__name__, "top_elements")
@@ -250,7 +250,7 @@ def get_links_for_tag(browser, tag, amount, skip_top_posts, randomize, media, lo
     tag = tag[1:] if tag[:1] == "#" else tag
 
     tag_link = "https://www.instagram.com/explore/tags/{}".format(tag)
-    web_address_navigator(browser, tag_link)
+    web_address_navigator(browser, logger, tag_link)
 
     top_elements = browser.find_element_by_xpath(
         read_xpath(get_links_for_tag.__name__, "top_elements")
@@ -433,7 +433,7 @@ def get_links_for_username(
 
     # Check URL of the webpage, if it already is user's profile page,
     # then do not navigate to it again
-    web_address_navigator(browser, user_link)
+    web_address_navigator(browser, logger, user_link)
 
     if not is_page_available(browser, logger):
         logger.error(
@@ -547,7 +547,7 @@ def check_link(
 
     # Check URL of the webpage, if it already is post's page, then do not
     # navigate to it again
-    web_address_navigator(browser, post_link)
+    web_address_navigator(browser, logger, post_link)
 
     # Check if the Post is Valid/Exists
     try:
@@ -799,7 +799,7 @@ def get_tags(browser, url):
 
     # Check URL of the webpage, if it already is the one to be navigated,
     # then do not navigate to it again
-    web_address_navigator(browser, url)
+    web_address_navigator(browser, logger, url)
 
     graphql = browser.execute_script(
         "return ('graphql' in window._sharedData.entry_data.PostPage[0])"

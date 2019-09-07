@@ -286,7 +286,7 @@ class custom_browser(Remote):
                 break
 
         # return to original page
-        web_address_navigator(self, current_url)
+        web_address_navigator(self, logger, current_url)
 
 
 def convert_selenium_browser(driver):

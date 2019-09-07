@@ -19,6 +19,7 @@ from .util import scroll_bottom
 from .util import get_users_from_dialog
 from .util import progress_tracker
 from .util import close_dialog_box
+from .util import is_page_available
 
 from selenium.common.exceptions import NoSuchElementException
 
@@ -112,7 +113,7 @@ def extract_post_info(browser):
 
 def extract_information(browser, username, daysold, max_pic):
     """Get all the information for the given username"""
-    web_address_navigator(browser, "https://www.instagram.com/" + username)
+    web_address_navigator(browser, logger, "https://www.instagram.com/" + username)
 
     try:
         num_of_posts = get_number_of_posts(browser)
@@ -254,7 +255,7 @@ def extract_information(browser, username, daysold, max_pic):
         print("\nScrapping link: ", link)
 
         try:
-            web_address_navigator(browser, link)
+            web_address_navigator(browser, logger, link)
             user_commented_list, pic_date_time = extract_post_info(browser)
             user_commented_total_list = user_commented_total_list + user_commented_list
 
@@ -300,7 +301,7 @@ def extract_information(browser, username, daysold, max_pic):
 def users_liked(browser, photo_url, amount=100):
     photo_likers = []
     try:
-        web_address_navigator(browser, photo_url)
+        web_address_navigator(browser, logger, photo_url)
         photo_likers = likers_from_photo(browser, amount)
         sleep(2)
     except NoSuchElementException:
@@ -414,14 +415,19 @@ def likers_from_photo(browser, amount=20):
 
 
 def get_photo_urls_from_profile(
-    browser, username, links_to_return_amount=1, randomize=True
-):
+    browser, logger, username, links_to_return_amount=1, randomize=True):
     # try:
     # input can be both username or user profile url
     username = username_url_to_username(username)
     print("\nGetting likers from user: ", username, "\n")
-    web_address_navigator(browser, "https://www.instagram.com/" + username + "/")
+    web_address_navigator(browser, logger, "https://www.instagram.com/" + username + "/")
     sleep(1)
+
+    if not is_page_available(browser, logger):
+        print("Problem loading page: https://www.instagram.com/" + username + "/")
+        print("Will try again")
+        web_address_navigator(browser, logger, "https://www.instagram.com/" + username + "/")
+        sleep(1)
 
     photos_a_elems = browser.find_elements_by_xpath(
         read_xpath(get_photo_urls_from_profile.__name__, "photos_a_elems")

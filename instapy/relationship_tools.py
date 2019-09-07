@@ -44,7 +44,7 @@ def get_followers(
     )
 
     user_link = "https://www.instagram.com/{}/".format(username)
-    web_address_navigator(browser, user_link)
+    web_address_navigator(browser, logger, user_link)
 
     # Get followers count
     followers_count, _ = get_relationship_counts(browser, username, logger)
@@ -99,7 +99,7 @@ def get_followers(
         has_next_data = True
 
         url = "{}&variables={}".format(graphql_followers, str(json.dumps(variables)))
-        web_address_navigator(browser, url)
+        web_address_navigator(browser, logger, url)
 
         # Get stored graphql queries data to be used
         try:
@@ -212,7 +212,7 @@ def get_followers(
                     graphql_followers, str(json.dumps(variables))
                 )
 
-                web_address_navigator(browser, url)
+                web_address_navigator(browser, logger, url)
                 sc_rolled += 1
 
                 # dump the current graphql queries data
@@ -316,7 +316,7 @@ def get_following(
     )
 
     user_link = "https://www.instagram.com/{}/".format(username)
-    web_address_navigator(browser, user_link)
+    web_address_navigator(browser, logger, user_link)
 
     # Get following count
     _, following_count = get_relationship_counts(browser, username, logger)
@@ -375,7 +375,7 @@ def get_following(
         has_next_data = True
 
         url = "{}&variables={}".format(graphql_following, str(json.dumps(variables)))
-        web_address_navigator(browser, url)
+        web_address_navigator(browser, logger, url)
 
         # Get stored graphql queries data to be used
         try:
@@ -485,7 +485,7 @@ def get_following(
                     graphql_following, str(json.dumps(variables))
                 )
 
-                web_address_navigator(browser, url)
+                web_address_navigator(browser, logger, url)
                 sc_rolled += 1
 
                 # dumps the current graphql queries data

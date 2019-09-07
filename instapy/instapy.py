@@ -1012,8 +1012,7 @@ class InstaPy:
                 break
 
             photo_urls = get_photo_urls_from_profile(
-                self.browser, username, photos_grab_amount, randomize
-            )
+                self.browser, self.logger, username, photos_grab_amount, randomize)
             sleep(1)
             if not isinstance(photo_urls, list):
                 photo_urls = [photo_urls]
@@ -1503,7 +1502,7 @@ class InstaPy:
                             not_valid_users += 1
                             continue
                         else:
-                            web_address_navigator(self.browser, link)
+                            web_address_navigator(self.browser, self.logger, link)
 
                         # try to like
                         like_state, msg = like_image(
@@ -1719,7 +1718,7 @@ class InstaPy:
                             not_valid_users += 1
                             continue
                         else:
-                            web_address_navigator(self.browser, link)
+                            web_address_navigator(self.browser, self.logger, link)
 
                         # try to comment
                         self.logger.info(
@@ -1945,7 +1944,7 @@ class InstaPy:
                             not_valid_users += 1
                             continue
                         else:
-                            web_address_navigator(self.browser, link)
+                            web_address_navigator(self.browser, logger, link)
 
                         # try to like
                         like_state, msg = like_image(
@@ -4022,7 +4021,7 @@ class InstaPy:
                                     not_valid_users += 1
                                     continue
                                 else:
-                                    web_address_navigator(self.browser, link)
+                                    web_address_navigator(self.browser, logger, link)
 
                                 # try to like
                                 like_state, msg = like_image(
@@ -4555,7 +4554,7 @@ class InstaPy:
                             not_valid_users += 1
                             continue
                         else:
-                            web_address_navigator(self.browser, link)
+                            web_address_navigator(self.browser, logger, link)
 
                         # try to follow
                         follow_state, msg = follow_user(
@@ -4687,7 +4686,7 @@ class InstaPy:
                             not_valid_users += 1
                             continue
                         else:
-                            web_address_navigator(self.browser, link)
+                            web_address_navigator(self.browser, logger, link)
 
                         # try to follow
                         follow_state, msg = follow_user(
@@ -4816,7 +4815,7 @@ class InstaPy:
                         not_valid_users += 1
                         continue
                     else:
-                        web_address_navigator(self.browser, url)
+                        web_address_navigator(self.browser, logger, url)
 
                     # try to like
                     like_state, msg = like_image(
@@ -5635,7 +5634,7 @@ class InstaPy:
         while accepted < amount:
 
             feed_link = "https://www.instagram.com/accounts/activity/?followRequests=1"
-            web_address_navigator(self.browser, feed_link)
+            web_address_navigator(self.browser, logger, feed_link)
 
             requests_to_confirm = self.browser.find_elements_by_xpath(
                 "//button[text()='Confirm']"
@@ -5684,7 +5683,7 @@ class InstaPy:
             return self
 
         user_link = "https://www.instagram.com/{}/".format(self.username)
-        web_address_navigator(self.browser, user_link)
+        web_address_navigator(self.browser, self.logger, user_link)
         try:
             pod_posts = get_recent_posts_from_pods(topic, self.logger)
             self.logger.info("Downloaded pod_posts : {}".format(pod_posts))
@@ -5709,7 +5708,7 @@ class InstaPy:
             my_recent_post_ids = []
             for post_link in post_links:
                 try:
-                    web_address_navigator(self.browser, post_link)
+                    web_address_navigator(self.browser, self.logger, post_link)
                     sleep(2)
                     time_element = self.browser.find_element_by_xpath("//div/a/time")
                     post_datetime_str = time_element.get_attribute("datetime")
@@ -5777,7 +5776,7 @@ class InstaPy:
             try:
                 pod_post_id = pod_post["postid"]
                 post_link = "https://www.instagram.com/p/{}".format(pod_post_id)
-                web_address_navigator(self.browser, post_link)
+                web_address_navigator(self.browser, self.logger, post_link)
 
                 inappropriate, user_name, is_video, reason, scope = check_link(
                     self.browser,

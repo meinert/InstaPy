@@ -175,7 +175,7 @@ def watch_story(browser, elem, logger, action_type, simulate=False):
     else:
         story_link = "https://www.instagram.com/{}".format(elem)
 
-    web_address_navigator(browser, story_link)
+    web_address_navigator(browser, logger, story_link)
     # wait for the page to load
     time.sleep(randint(2, 6))
     # order is important here otherwise we are not on the page of the story we want to watch
