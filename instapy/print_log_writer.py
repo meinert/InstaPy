@@ -16,7 +16,7 @@ def get_log_time():
     return log_time
 
 
-def log_follower_num(browser, username, logfolder):
+def log_follower_num(browser, logger, username, logfolder):
     """Prints and logs the current number of followers to
     a seperate file"""
     user_link = "https://www.instagram.com/{}".format(username)
@@ -50,7 +50,7 @@ def log_follower_num(browser, username, logfolder):
     return followed_by
 
 
-def log_following_num(browser, username, logfolder):
+def log_following_num(browser, logger, username, logfolder):
     """Prints and logs the current number of followers to
     a seperate file"""
     user_link = "https://www.instagram.com/{}".format(username)

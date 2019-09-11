@@ -298,7 +298,7 @@ def extract_information(browser, username, daysold, max_pic):
     return user_commented_list
 
 
-def users_liked(browser, photo_url, amount=100):
+def users_liked(browser, logger, photo_url, amount=100):
     photo_likers = []
     try:
         web_address_navigator(browser, logger, photo_url)

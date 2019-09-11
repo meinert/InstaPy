@@ -159,7 +159,7 @@ def validate_username(
                     "---> Sorry, this page isn't available!\t~either "
                     "link is broken or page is removed\n"
                 )
-                return False, inap_msg
+                return False, inap_msg, None, None
 
     else:
         username = username_or_link  # if there is no `/` in
@@ -167,14 +167,14 @@ def validate_username(
 
     if username == own_username:
         inap_msg = "---> Username '{}' is yours!\t~skipping user\n".format(own_username)
-        return False, inap_msg
+        return False, inap_msg, None, None
 
     if username in ignore_users:
         inap_msg = (
             "---> '{}' is in the `ignore_users` list\t~skipping "
             "user\n".format(username)
         )
-        return False, inap_msg
+        return False, inap_msg, None, None
 
     blacklist_file = "{}blacklist.csv".format(logfolder)
     blacklist_file_exists = os.path.isfile(blacklist_file)
@@ -188,7 +188,7 @@ def validate_username(
                         return (
                             False,
                             "---> {} is in blacklist  ~skipping "
-                            "user\n".format(username),
+                            "user\n".format(username), None, None,
                         )
 
     # Checks the potential of target user by relationship status in order
@@ -247,7 +247,7 @@ def validate_username(
                             truncate_float(relationship_ratio, 2),
                         )
                     )
-                    return False, inap_msg
+                    return False, inap_msg, followers_count, following_count
 
             elif delimit_by_numbers:
                 if followers_count:
@@ -257,7 +257,7 @@ def validate_username(
                                 "User '{}'s followers count exceeds maximum "
                                 "limit  ~skipping user\n".format(username)
                             )
-                            return False, inap_msg
+                            return False, inap_msg, followers_count, following_count
 
                     if min_followers:
                         if followers_count < min_followers:
@@ -265,7 +265,7 @@ def validate_username(
                                 "User '{}'s followers count is less than "
                                 "minimum limit  ~skipping user\n".format(username)
                             )
-                            return False, inap_msg
+                            return False, inap_msg, followers_count, following_count
 
                 if following_count:
                     if max_following:
@@ -274,7 +274,7 @@ def validate_username(
                                 "User '{}'s following count exceeds maximum "
                                 "limit  ~skipping user\n".format(username)
                             )
-                            return False, inap_msg
+                            return False, inap_msg, followers_count, following_count
 
                     if min_following:
                         if following_count < min_following:
@@ -282,7 +282,7 @@ def validate_username(
                                 "User '{}'s following count is less than "
                                 "minimum limit  ~skipping user\n".format(username)
                             )
-                            return False, inap_msg
+                            return False, inap_msg, followers_count, following_count
 
                 if potency_ratio:
                     if relationship_ratio and relationship_ratio < potency_ratio:
@@ -296,7 +296,7 @@ def validate_username(
                                 truncate_float(relationship_ratio, 2),
                             )
                         )
-                        return False, inap_msg
+                        return False, inap_msg, followers_count, following_count
 
     if min_posts or max_posts or skip_private or skip_no_profile_pic or skip_business:
         user_link = "https://www.instagram.com/{}/".format(username)
@@ -311,21 +311,21 @@ def validate_username(
         except WebDriverException:
             logger.error("~cannot get number of posts for username")
             inap_msg = "---> Sorry, couldn't check for number of posts of " "username\n"
-            return False, inap_msg
+            return False, inap_msg, followers_count, following_count
         if max_posts:
             if number_of_posts > max_posts:
                 inap_msg = (
                     "Number of posts ({}) of '{}' exceeds the maximum limit "
                     "given {}\n".format(number_of_posts, username, max_posts)
                 )
-                return False, inap_msg
+                return False, inap_msg, followers_count, following_count
         if min_posts:
             if number_of_posts < min_posts:
                 inap_msg = (
                     "Number of posts ({}) of '{}' is less than the minimum "
                     "limit given {}\n".format(number_of_posts, username, min_posts)
                 )
-                return False, inap_msg
+                return False, inap_msg, followers_count, following_count
 
     # Skip users
 
@@ -335,9 +335,9 @@ def validate_username(
             is_private = getUserData("graphql.user.is_private", browser)
         except WebDriverException:
             logger.error("~cannot get if user is private")
-            return False, "---> Sorry, couldn't get if user is private\n"
+            return False, "---> Sorry, couldn't get if user is private\n", followers_count, following_count
         if is_private and (random.randint(0, 100) <= skip_private_percentage):
-            return False, "{} is private account, by default skip\n".format(username)
+            return False, "{} is private account, by default skip\n".format(username), followers_count, following_count
 
     # skip no profile pic
     if skip_no_profile_pic:
@@ -345,12 +345,12 @@ def validate_username(
             profile_pic = getUserData("graphql.user.profile_pic_url", browser)
         except WebDriverException:
             logger.error("~cannot get the post profile pic url")
-            return False, "---> Sorry, couldn't get if user profile pic url\n"
+            return False, "---> Sorry, couldn't get if user profile pic url\n", followers_count, following_count
         if (
             profile_pic in default_profile_pic_instagram
             or str(profile_pic).find("11906329_960233084022564_1448528159_a.jpg") > 0
         ) and (random.randint(0, 100) <= skip_no_profile_pic_percentage):
-            return False, "{} has default instagram profile picture\n".format(username)
+            return False, "{} has default instagram profile picture\n".format(username), followers_count, following_count
 
     # skip business
     if skip_business or skip_non_business:
@@ -364,12 +364,14 @@ def validate_username(
             return (
                 False,
                 "---> Sorry, couldn't get if user has business " "account active\n",
+                followers_count, following_count,
             )
 
         if skip_non_business and not is_business_account:
             return (
                 False,
                 "---> Skiping non business because skip_non_business set to True",
+                followers_count, following_count,
             )
 
         if is_business_account:
@@ -377,7 +379,7 @@ def validate_username(
                 category = getUserData("graphql.user.business_category_name", browser)
             except WebDriverException:
                 logger.error("~cannot get category name for user")
-                return False, "---> Sorry, couldn't get category name for " "user\n"
+                return False, "---> Sorry, couldn't get category name for " "user\n", followers_count, following_count
 
             if len(skip_business_categories) == 0:
                 # skip if not in dont_include
@@ -385,7 +387,7 @@ def validate_username(
                     if len(dont_skip_business_categories) == 0 and (
                         random.randint(0, 100) <= skip_business_percentage
                     ):
-                        return False, "'{}' has a business account\n".format(username)
+                        return False, "'{}' has a business account\n".format(username), followers_count, following_count
                     else:
                         return (
                             False,
@@ -393,7 +395,8 @@ def validate_username(
                                 "'{}' has a business account in the "
                                 "undesired category of '{}'\n".format(
                                     username, category
-                                )
+                                ),
+                                followers_count, following_count,
                             ),
                         )
             else:
@@ -404,6 +407,7 @@ def validate_username(
                             "'{}' has a business account in the "
                             "undesired category of '{}'\n".format(username, category)
                         ),
+                        followers_count, following_count,
                     )
 
     if len(skip_bio_keyword) != 0:
@@ -412,7 +416,7 @@ def validate_username(
             profile_bio = getUserData("graphql.user.biography", browser)
         except WebDriverException:
             logger.error("~cannot get user bio")
-            return False, "---> Sorry, couldn't get get user bio " "account active\n"
+            return False, "---> Sorry, couldn't get get user bio " "account active\n", followers_count, following_count
         for bio_keyword in skip_bio_keyword:
             if bio_keyword.lower() in profile_bio.lower():
                 return (
@@ -420,10 +424,11 @@ def validate_username(
                     "{} has a bio keyword of {}, by default skip\n".format(
                         username, bio_keyword
                     ),
+                    followers_count, following_count,
                 )
 
     # if everything is ok
-    return True, "Valid user"
+    return True, "Valid user", followers_count, following_count
 
 
 def getUserData(
@@ -1200,6 +1205,8 @@ def web_address_navigator(browser, logger, link):
                     )
                 total_timeouts += 1
                 sleep(2)
+            except Exception as exp:
+                print("Exception thrown: {}".format(exp))
 
 
 @contextmanager

@@ -439,9 +439,9 @@ class InstaPy:
         # logs only followers/following numbers when able to login,
         # to speed up the login process and avoid loading profile
         # page (meaning less server calls)
-        self.followed_by = log_follower_num(self.browser, self.username, self.logfolder)
+        self.followed_by = log_follower_num(self.browser, self.logger, self.username, self.logfolder)
         self.following_num = log_following_num(
-            self.browser, self.username, self.logfolder
+            self.browser, self.logger,  self.username, self.logfolder
         )
 
         return self
@@ -1021,7 +1021,7 @@ class InstaPy:
                 if self.quotient_breach:
                     break
 
-                likers = users_liked(self.browser, photo_url, follow_likers_per_photo)
+                likers = users_liked(self.browser, self.logger, photo_url, follow_likers_per_photo)
                 # This way of iterating will prevent sleep interference
                 # between functions
                 random.shuffle(likers)
@@ -1160,7 +1160,7 @@ class InstaPy:
 
             if not users_validated:
                 # Verify if the user should be followed
-                validation, details = self.validate_user_call(acc_to_follow)
+                validation, details, followers_count, following_count  = self.validate_user_call(acc_to_follow)
                 if validation is not True or acc_to_follow == self.username:
                     self.logger.info("--> Not a valid user: {}".format(details))
                     not_valid_users += 1
@@ -1302,7 +1302,7 @@ class InstaPy:
 
     def validate_user_call(self, user_name: str):
         """ Short call of validate_username() function """
-        validation, details = validate_username(
+        validation, details, followers_count, following_count = validate_username(
             self.browser,
             user_name,
             self.username,
@@ -1329,7 +1329,7 @@ class InstaPy:
             self.logger,
             self.logfolder,
         )
-        return validation, details
+        return validation, details, followers_count, following_count
 
     def fetch_smart_comments(self, is_video: bool, temp_comments: list):
         if temp_comments:
@@ -1495,7 +1495,7 @@ class InstaPy:
 
                     if not inappropriate and self.liking_approved:
                         # validate user
-                        validation, details = self.validate_user_call(user_name)
+                        validation, details, followers_count, following_count = self.validate_user_call(user_name)
 
                         if validation is not True:
                             self.logger.info("--> Not a valid user: {}".format(details))
@@ -1712,7 +1712,7 @@ class InstaPy:
                     )
                     if not inappropriate:
                         # validate user
-                        validation, details = self.validate_user_call(user_name)
+                        validation, details, followers_count, following_count = self.validate_user_call(user_name)
                         if validation is not True:
                             self.logger.info(details)
                             not_valid_users += 1
@@ -1938,7 +1938,7 @@ class InstaPy:
 
                     if not inappropriate and self.liking_approved:
                         # validate user
-                        validation, details = self.validate_user_call(user_name)
+                        validation, details, followers_count, following_count = self.validate_user_call(user_name)
                         if validation is not True:
                             self.logger.info(details)
                             not_valid_users += 1
@@ -2151,7 +2151,7 @@ class InstaPy:
             following = random.randint(0, 100) <= self.follow_percentage
 
             if not users_validated:
-                validation, details = self.validate_user_call(username)
+                validation, details, followers_count, following_count = self.validate_user_call(username)
                 if not validation:
                     self.logger.info("--> Not a valid user: {}".format(details))
                     not_valid_users += 1
@@ -2411,7 +2411,7 @@ class InstaPy:
             self.logger.info("--> {}".format(username.encode("utf-8")))
 
             if not users_validated:
-                validation, details = self.validate_user_call(username)
+                validation, details, followers_count, following_count = self.validate_user_call(username)
                 if not validation:
                     self.logger.info("--> not a valid user: {}".format(details))
                     not_valid_users += 1
@@ -2743,7 +2743,7 @@ class InstaPy:
             self.logger.info("--> {}".format(username.encode("utf-8")))
 
             if not users_validated and username != self.username:
-                validation, details = self.validate_user_call(username)
+                validation, details, followers_count, following_count = self.validate_user_call(username)
                 if not validation:
                     self.logger.info("--> not a valid user: {}".format(details))
                     not_valid_users += 1
@@ -3136,7 +3136,7 @@ class InstaPy:
                     "User '{}' [{}/{}]".format((person), index + 1, len(person_list))
                 )
 
-                validation, details = self.validate_user_call(person)
+                validation, details, followers_count, following_count = self.validate_user_call(person)
                 if validation is not True:
                     self.logger.info(details)
                     not_valid_users += 1
@@ -3311,7 +3311,7 @@ class InstaPy:
                     "User '{}' [{}/{}]".format((person), index + 1, len(person_list))
                 )
 
-                validation, details = self.validate_user_call(person)
+                validation, details, followers_count, following_count = self.validate_user_call(person)
                 if validation is not True:
                     self.logger.info(details)
                     not_valid_users += 1
@@ -3491,7 +3491,7 @@ class InstaPy:
                     )
                 )
 
-                validation, details = self.validate_user_call(person)
+                validation, details, followers_count, following_count = self.validate_user_call(person)
                 if validation is not True:
                     self.logger.info(details)
                     not_valid_users += 1
@@ -3678,7 +3678,7 @@ class InstaPy:
                     )
                 )
 
-                validation, details = self.validate_user_call(person)
+                validation, details, followers_count, following_count = self.validate_user_call(person)
                 if validation is not True:
                     self.logger.info(details)
                     not_valid_users += 1
@@ -4015,7 +4015,7 @@ class InstaPy:
                                 )
                             if not inappropriate and self.liking_approved:
                                 # validate user
-                                validation, details = self.validate_user_call(user_name)
+                                validation, details, followers_count, following_count = self.validate_user_call(user_name)
                                 if validation is not True:
                                     self.logger.info(details)
                                     not_valid_users += 1
@@ -4548,7 +4548,7 @@ class InstaPy:
 
                     if not inappropriate:
                         # validate user
-                        validation, details = self.validate_user_call(user_name)
+                        validation, details, followers_count, following_count = self.validate_user_call(user_name)
                         if validation is not True:
                             self.logger.info(details)
                             not_valid_users += 1
@@ -4680,7 +4680,7 @@ class InstaPy:
 
                     if not inappropriate:
                         # validate user
-                        validation, details = self.validate_user_call(user_name)
+                        validation, details, followers_count, following_count = self.validate_user_call(user_name)
                         if validation is not True:
                             self.logger.info(details)
                             not_valid_users += 1
@@ -4809,7 +4809,7 @@ class InstaPy:
 
                 if not inappropriate and self.liking_approved:
                     # validate user
-                    validation, details = self.validate_user_call(user_name)
+                    validation, details, followers_count, following_count = self.validate_user_call(user_name)
                     if validation is not True:
                         self.logger.info(details)
                         not_valid_users += 1
@@ -5288,7 +5288,7 @@ class InstaPy:
             )
 
             if username != self.username:
-                validation, details = self.validate_user_call(username)
+                validation, details, followers_count, following_count = self.validate_user_call(username)
                 if validation is not True:
                     self.logger.info("--> Not a valid user: {}".format(details))
                     self.not_valid_users += 1
