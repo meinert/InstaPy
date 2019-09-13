@@ -208,7 +208,7 @@ def get_comments_on_post(
 ):
     """ Fetch comments data on posts """
 
-    web_address_navigator(browser, post_link)
+    web_address_navigator(browser, logger, post_link)
 
     orig_amount = amount
     if randomize is True:

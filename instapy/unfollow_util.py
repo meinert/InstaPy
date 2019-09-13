@@ -152,7 +152,7 @@ def get_following_status(
 
     if track == "profile":
         ig_homepage = "https://www.instagram.com/"
-        web_address_navigator(browser, ig_homepage + person)
+        web_address_navigator(browser, logger, ig_homepage + person)
 
     follow_button_XP = read_xpath(get_following_status.__name__, "follow_button_XP")
     failure_msg = "--> Unable to detect the following status of '{}'!"
@@ -168,7 +168,7 @@ def get_following_status(
             browser, username, person, None, logger, logfolder
         )
         if person_new:
-            web_address_navigator(browser, ig_homepage + person_new)
+            web_address_navigator(browser, logger, ig_homepage + person_new)
             valid_page = is_page_available(browser, logger)
             if not valid_page:
                 logger.error(failure_msg.format(person_new.encode("utf-8")))
@@ -269,7 +269,7 @@ def unfollow(
 
     # check URL of the webpage, if it already is the one to be navigated
     # then do not navigate to it again
-    web_address_navigator(browser, user_link)
+    web_address_navigator(browser, logger, user_link)
 
     # check how many poeple we are following
     _, allfollowing = get_relationship_counts(browser, username, logger)
@@ -458,10 +458,10 @@ def unfollow(
                         if followedback_status is not True:
 
                             user_link = "https://www.instagram.com/{}/".format(person)
-                            web_address_navigator(browser, user_link)
+                            web_address_navigator(browser, logger, user_link)
                             valid_page = is_page_available(browser, logger)
 
-                            if valid_page and is_follow_me(browser, person):
+                            if valid_page and is_follow_me(browser, logger, person):
                                 # delay follow-backers with delay_follow_back.
                                 time_stamp = (
                                     automatedFollowedPool["all"][person]["time_stamp"]
@@ -778,7 +778,7 @@ def follow_user(browser, track, login, user_name, button, blacklist, logger, log
             # check URL of the webpage, if it already is user's profile
             # page, then do not navigate to it again
             user_link = "https://www.instagram.com/{}/".format(user_name)
-            web_address_navigator(browser, user_link)
+            web_address_navigator(browser, logger, user_link)
 
         # find out CURRENT following status
         following_status, follow_button = get_following_status(
@@ -909,7 +909,7 @@ def get_users_through_dialog_with_graphql(
     }
     url = "{}&variables={}".format(graphql_query_URL, str(json.dumps(variables)))
 
-    web_address_navigator(browser, url)
+    web_address_navigator(browser, logger, url)
 
     pre = browser.find_element_by_tag_name("pre")
     # set JSON object
@@ -1151,7 +1151,7 @@ def get_given_user_followers(
     user_name = user_name.strip().lower()
 
     user_link = "https://www.instagram.com/{}/".format(user_name)
-    web_address_navigator(browser, user_link)
+    web_address_navigator(browser, logger, user_link)
 
     if not is_page_available(browser, logger):
         return [], []
@@ -1226,7 +1226,7 @@ def get_given_user_following(
     user_name = user_name.strip().lower()
 
     user_link = "https://www.instagram.com/{}/".format(user_name)
-    web_address_navigator(browser, user_link)
+    web_address_navigator(browser, logger, user_link)
 
     if not is_page_available(browser, logger):
         return [], []
@@ -1472,7 +1472,7 @@ def unfollow_user(
         # Method of unfollowing from a user's profile page or post page
         if track == "profile":
             user_link = "https://www.instagram.com/{}/".format(person)
-            web_address_navigator(browser, user_link)
+            web_address_navigator(browser, logger, user_link)
 
         # find out CURRENT follow status
         following_status, follow_button = get_following_status(
@@ -1761,7 +1761,7 @@ def get_follow_requests(browser, amount, sleep_delay, logger, logfolder):
     user_link = (
         "https://www.instagram.com/accounts/access_tool" "/current_follow_requests"
     )
-    web_address_navigator(browser, user_link)
+    web_address_navigator(browser, logger, user_link)
 
     list_of_users = []
     view_more_button_exist = True
