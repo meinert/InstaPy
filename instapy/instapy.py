@@ -1302,7 +1302,7 @@ class InstaPy:
 
     def validate_user_call(self, user_name: str):
         """ Short call of validate_username() function """
-        validation, details, followers_count, following_count = validate_username(
+        validation, details, userstat = validate_username(
             self.browser,
             user_name,
             self.username,
@@ -1329,7 +1329,7 @@ class InstaPy:
             self.logger,
             self.logfolder,
         )
-        return validation, details, followers_count, following_count
+        return validation, details, userstat
 
     def fetch_smart_comments(self, is_video: bool, temp_comments: list):
         if temp_comments:
