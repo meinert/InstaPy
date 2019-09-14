@@ -52,11 +52,13 @@ SQL_CREATE_ACCOUNTS_PROGRESS_TABLE = """
         FOREIGN KEY(`profile_id`) REFERENCES `profiles`(`id`));"""
 
 
-def get_database(make=False):
+def get_database(make=False, name=None):
     logger = Settings.logger
-    credentials = Settings.profile
 
-    profile_id, name = credentials["id"], credentials["name"]
+    if name is None:
+        credentials = Settings.profile
+        profile_id, name = credentials["id"], credentials["name"]
+
     address = validate_database_address()
 
     if not os.path.isfile(address) or make:

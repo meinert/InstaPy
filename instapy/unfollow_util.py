@@ -1381,13 +1381,13 @@ def dump_follow_restriction(profile_name, logger, logfolder):
             conn.close()
 
 
-def follow_restriction(operation, username, limit, logger):
+def follow_restriction(operation, username, limit, logger, db_username=None):
     """ Keep track of the followed users and help avoid excessive follow of
     the same user """
 
     try:
         # get a DB and start a connection
-        db, profile_id = get_database()
+        db, profile_id = get_database(username=db_username)
         conn = sqlite3.connect(db)
 
         with conn:
