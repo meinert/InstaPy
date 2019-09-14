@@ -55,8 +55,14 @@ SQL_CREATE_ACCOUNTS_PROGRESS_TABLE = """
 def get_database(make=False, name=None):
     logger = Settings.logger
 
+    credentials = Settings.profile
+
+    if name == credentials["name"]:
+        set_profile_id = True
+    else:
+        set_profile_id = False
+
     if name is None:
-        credentials = Settings.profile
         profile_id, name = credentials["id"], credentials["name"]
 
     address = validate_database_address()
@@ -65,7 +71,7 @@ def get_database(make=False, name=None):
         create_database(address, logger, name)
 
     profile_id = (
-        get_profile(name, address, logger) if profile_id is None or make else profile_id
+        get_profile(name, address, logger, set_profile_id) if profile_id is None or make else profile_id
     )
 
     return address, profile_id
@@ -142,7 +148,7 @@ def validate_database_address():
     return address
 
 
-def get_profile(name, address, logger):
+def get_profile(name, address, logger, set_profile_id=True):
     try:
         conn = sqlite3.connect(address)
         with conn:
@@ -168,8 +174,10 @@ def get_profile(name, address, logger):
 
     profile = dict(profile)
     profile_id = profile["id"]
-    # assign the id to its child in `Settings` class
-    Settings.profile["id"] = profile_id
+
+    if set_profile_id:
+        # assign the id to its child in `Settings` class
+        Settings.profile["id"] = profile_id
 
     return profile_id
 
