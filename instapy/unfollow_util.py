@@ -1383,7 +1383,7 @@ def dump_follow_restriction(profile_name, logger, logfolder):
 
 def follow_restriction(operation, username, limit, logger, db_username=None):
     """ Keep track of the followed users and help avoid excessive follow of
-    the same user """
+    the same user... """
 
     try:
         # get a DB and start a connection
