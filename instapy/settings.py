@@ -36,6 +36,7 @@ class Settings:
     # locations
     log_location = localize_path("logs")
     database_location = localize_path("db", "instapy.db")
+    base_dir = localize_path()
 
     # set a logger cache outside the InstaPy object to avoid
     # re-instantiation issues

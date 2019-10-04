@@ -1387,7 +1387,7 @@ def follow_restriction(operation, username, limit, logger, db_username=None):
 
     try:
         # get a DB and start a connection
-        db, profile_id = get_database(username=db_username)
+        db, profile_id = get_database(name=db_username)
         conn = sqlite3.connect(db)
 
         with conn:

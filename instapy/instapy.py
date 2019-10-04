@@ -185,6 +185,7 @@ class InstaPy:
         self.followed = 0
         self.already_followed = 0
         self.unfollowed = 0
+        self.unfollowed_message = ""
         self.followed_by = 0
         self.followed_all = 0
         self.unfollowNumber = 0
@@ -1115,8 +1116,9 @@ class InstaPy:
             followlist = [followlist]
 
         if self.aborting:
-            self.logger.info(">>> self aborting prevented")
-            # return self
+            #self.logger.info(">>> self aborting prevented")
+            self.logger.warning("ABORTING")
+            return self
 
         # standalone means this feature is started by the user
         standalone = (
@@ -3840,7 +3842,8 @@ class InstaPy:
                 self.logfolder,
             )
             self.logger.info("--> Total people unfollowed : {}\n".format(unfollowed))
-            self.unfollowed += unfollowed
+            self.unfollowed += unfollowed[0]
+            self.unfollowed_message = unfollowed[1]
 
         except Exception as exc:
             if isinstance(exc, RuntimeWarning):

@@ -57,15 +57,17 @@ def get_database(make=False, name=None):
 
     credentials = Settings.profile
 
-    if name == credentials["name"]:
+    if name == credentials["name"] or name is None:
         set_profile_id = True
+        address = validate_database_address()
     else:
         set_profile_id = False
+        address = os.path.join(Settings.base_dir, 'myLogs', name + '.db')
 
     if name is None:
         profile_id, name = credentials["id"], credentials["name"]
-
-    address = validate_database_address()
+    else:
+        profile_id = None
 
     if not os.path.isfile(address) or make:
         create_database(address, logger, name)
@@ -75,7 +77,6 @@ def get_database(make=False, name=None):
     )
 
     return address, profile_id
-
 
 def create_database(address, logger, name):
     try:
