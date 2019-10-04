@@ -1842,6 +1842,11 @@ def is_page_available(browser, logger):
 
         if any(keyword in page_title for keyword in expected_keywords):
             if "Page Not Found" in page_title:
+                pleaseWait = browser.page_source.find("Please wait a few minutes before you try again.")
+
+                if pleaseWait > -1:
+                    logger.warning("ERROR message: Please wait a few minutes before you try again.")
+
                 logger.warning(
                     "The page isn't available!\t~the link may be broken, "
                     "or the page may have been removed..."
