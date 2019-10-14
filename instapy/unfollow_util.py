@@ -178,6 +178,7 @@ def get_following_status(
             logger.error(failure_msg.format(person.encode("utf-8")))
             return "UNAVAILABLE", None
     # wait until the follow button is located and visible, then get it
+    #TODO: somtimes find a "Follow" button under "Suggestions for you".....check for the buttons location and or other element on the page. Or make sure to check for the Following button first
     try:
         browser.find_element_by_xpath(
             read_xpath(get_following_status.__name__, "follow_button_XP")
@@ -761,7 +762,10 @@ def unfollow(
             "Please select a proper unfollow method!  ~leaving unfollow " "activity\n"
         )
 
-    return unfollowNum, unfollow_list
+    if unfollow_state is True:
+        return unfollowNum, unfollow_list
+    else:
+        return unfollowNum, msg
 
 
 def follow_user(browser, track, login, user_name, button, blacklist, logger, logfolder):
@@ -786,6 +790,7 @@ def follow_user(browser, track, login, user_name, button, blacklist, logger, log
         )
         if following_status in ["Follow", "Follow Back"]:
             click_visibly(browser, follow_button)  # click to follow
+            sleep(1)
             follow_state, msg = verify_action(
                 browser, "follow", track, login, user_name, None, logger, logfolder
             )
@@ -1475,6 +1480,7 @@ def unfollow_user(
             web_address_navigator(browser, logger, user_link)
 
         # find out CURRENT follow status
+        #TODO: oftens returns "following_status = "Follow"". Why?
         following_status, follow_button = get_following_status(
             browser, track, username, person, person_id, logger, logfolder
         )

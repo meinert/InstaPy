@@ -1410,3 +1410,163 @@ def load_following_data(username, compare_by, compare_track, logger, logfolder):
 
     # return that file to be compared
     return following_data, selected_filename
+
+def load_nonfollower_data(username, compare_by, compare_track, logger, logfolder, return_empty=False):
+    """ Write grabbed `following` data into local storage """
+    # get the list of all existing FULL `Following` data files in
+    # ~/logfolder/username/nonfollowers/ location
+    files_location = "{}relationship_data\\{}\\nonfollowers".format(logfolder, username)
+    nonfollower_data_files = [
+        os.path.basename(file)
+        for file in glob.glob("{}/*.json".format(files_location))
+    ]
+
+    # check if there is any file to be compared
+    if not nonfollower_data_files:
+        logger.info(
+            "There are no any `Nonfollowers` data files in the {} location to "
+            "compare".format(files_location)
+        )
+        return [], None
+
+    # Filtrate and get the right track of file to compare
+    tracked_filenames = []
+    for data_file in nonfollower_data_files:
+        tracked_filenames.append(data_file[:10])
+    sorted_filenames = sorted(
+        tracked_filenames, key=lambda x: datetime.strptime(x, "%d-%m-%Y")
+    )
+
+    this_day = datetime.today().strftime("%d")
+    this_month = datetime.today().strftime("%m")
+    this_year = datetime.today().strftime("%Y")
+
+    structured_entries = {}
+
+    for entry in sorted_filenames:
+        entry_day, entry_month, entry_year = entry.split("-")
+
+        structured_entries.setdefault("years", {}).setdefault(
+            entry_year, {}
+        ).setdefault("months", {}).setdefault(entry_month, {}).setdefault(
+            "days", {}
+        ).setdefault(
+            entry_day, {}
+        ).setdefault(
+            "entries", []
+        ).append(
+            entry
+        )
+
+    if compare_by == "latest":
+        selected_filename = sorted_filenames[-1]
+
+    elif compare_by == "day":
+        latest_day = sorted_filenames[-1]
+        current_day = datetime.today().strftime("%d-%m-%Y")
+
+        if latest_day == current_day:
+            data_for_today = structured_entries["years"][this_year]["months"][
+                this_month
+            ]["days"][this_day]["entries"]
+
+            if compare_track == "first" or len(data_for_today) <= 1:
+                selected_filename = data_for_today[0]
+            if compare_track == "median":
+                median_index = int(len(data_for_today) / 2)
+                selected_filename = data_for_today[median_index]
+            if compare_track == "last":
+                selected_filename = data_for_today[-1]
+
+        elif return_empty: #TODO: Do similar for year, month
+            logger.info(
+                "There are no any `Nonfollowers` data files in the {} location for today".format(files_location)
+            )
+            return [], None
+        else:
+            selected_filename = sorted_filenames[-1]
+            logger.info(
+                "No any data exists for today!  ~choosing the last existing "
+                "data from {}".format(selected_filename)
+            )
+
+    elif compare_by == "month":
+        latest_month = sorted_filenames[-1][-7:]
+        current_month = datetime.today().strftime("%m-%Y")
+
+        if latest_month == current_month:
+            data_for_month = []
+
+            for day in structured_entries["years"][this_year]["months"][this_month][
+                "days"
+            ]:
+                data_for_month.extend(
+                    structured_entries["years"][this_year]["months"][this_month][
+                        "days"
+                    ][day]["entries"]
+                )
+
+            if compare_track == "first" or len(data_for_month) <= 1:
+                selected_filename = data_for_month[0]
+            if compare_track == "median":
+                median_index = int(len(data_for_month) / 2)
+                selected_filename = data_for_month[median_index]
+            if compare_track == "last":
+                selected_filename = data_for_month[-1]
+
+        else:
+            selected_filename = sorted_filenames[-1]
+            logger.info(
+                "No any data exists for this month!  ~choosing the last "
+                "existing data from {}".format(selected_filename)
+            )
+
+    elif compare_by == "year":
+        latest_year = sorted_filenames[-1][-4:]
+
+        if latest_year == this_year:
+            data_for_year = []
+
+            for month in structured_entries["years"][this_year]["months"]:
+                for day in structured_entries["years"][this_year]["months"][month][
+                    "days"
+                ]:
+                    data_for_year.extend(
+                        structured_entries["years"][this_year]["months"][month]["days"][
+                            day
+                        ]["entries"]
+                    )
+
+            if compare_track == "first" or len(data_for_year) <= 1:
+                selected_filename = data_for_year[0]
+            if compare_track == "median":
+                median_index = int(len(data_for_year) / 2)
+                selected_filename = data_for_year[median_index]
+            if compare_track == "last":
+                selected_filename = data_for_year[-1]
+
+        else:
+            selected_filename = sorted_filenames[-1]
+            logger.info(
+                "No any data exists for this year!  ~choosing the last existing data from {}".format(
+                    selected_filename
+                )
+            )
+
+    elif compare_by == "earliest":
+        selected_filename = sorted_filenames[0]
+
+    # load that file
+    selected_file = (
+        glob.glob("{}/{}*.json".format(files_location, selected_filename))
+    )[0]
+    with open(selected_file) as following_data_file:
+        nonfollower_data = json.load(following_data_file)
+
+    logger.info(
+        "Took prior `Nonfollowing` data file from {} with {} usernames " 
+        "to be compared with live data\n".format(selected_filename, len(nonfollower_data))
+    )
+
+    # return that file to be compared
+    return nonfollower_data, selected_filename

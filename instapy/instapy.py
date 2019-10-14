@@ -1111,6 +1111,8 @@ class InstaPy:
         sleep_delay: int = 600,
         interact: bool = False,
     ):
+        msg = ""
+
         """Allows to follow by any scrapped list"""
         if not isinstance(followlist, list):
             followlist = [followlist]
@@ -1118,7 +1120,7 @@ class InstaPy:
         if self.aborting:
             #self.logger.info(">>> self aborting prevented")
             self.logger.warning("ABORTING")
-            return self
+            return self, msg
 
         # standalone means this feature is started by the user
         standalone = (
@@ -1164,6 +1166,7 @@ class InstaPy:
             if follow_restriction(
                 "read", acc_to_follow, self.follow_times, self.logger
             ):
+                msg = "{} has already been followed {} or more times".format(acc_to_follow, self.follow_times)
                 print("")
                 continue
 
@@ -1280,7 +1283,7 @@ class InstaPy:
         self.already_followed += already_followed
         self.not_valid_users += not_valid_users
 
-        return followed_all
+        return followed_all, msg
 
     def set_relationship_bounds(
         self,
