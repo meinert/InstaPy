@@ -601,7 +601,7 @@ def add_user_to_blacklist(username, campaign, action, logger, logfolder):
     )
 
 
-def get_active_users(browser, username, posts, boundary, logger):
+def get_active_users(browser, username, posts, boundary, logger, count=1):
     """Returns a list with usernames who liked the latest n posts"""
 
     user_link = "https://www.instagram.com/{}/".format(username)
@@ -634,7 +634,7 @@ def get_active_users(browser, username, posts, boundary, logger):
 
     # if posts > total user posts, assume total posts
     posts = (
-        posts if total_posts is None else total_posts if posts > total_posts else posts
+        posts+count if total_posts is None else total_posts if (posts+count) > total_posts else posts+count
     )
 
     active_users = []
@@ -659,7 +659,7 @@ def get_active_users(browser, username, posts, boundary, logger):
         )
     )
 
-    count = 1
+    count = count
     checked_posts = 0
     while count <= posts:
         # load next post
@@ -700,7 +700,7 @@ def get_active_users(browser, username, posts, boundary, logger):
                 )
 
                 if likes_button != []:
-                    if likes_button[1] is not None:
+                    if len(likes_button) > 1 and likes_button[1] is not None:
                         likes_button = likes_button[1]
                     else:
                         likes_button = likes_button[0]
@@ -1845,7 +1845,7 @@ def is_page_available(browser, logger):
                 pleaseWait = browser.page_source.find("Please wait a few minutes before you try again.")
 
                 if pleaseWait > -1:
-                    logger.warning("ERROR message: Please wait a few minutes before you try again.")
+                    logger.error("ERROR message: Please wait a few minutes before you try again.")
 
                 logger.warning(
                     "The page isn't available!\t~the link may be broken, "

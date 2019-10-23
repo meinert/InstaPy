@@ -26,7 +26,7 @@ xpath["confirm_unfollow"] = {"button_xp": "//button[text()='Unfollow']"}
 xpath["dialog_username_extractor"] = {"person": "../../*"}
 
 xpath["dismiss_get_app_offer"] = {
-    "offer_elem": "//*[contains(text(), 'Get App')]",
+    "offer_elem": "//*[contains(text(), 'Use the App')]",
     "dismiss_elem": "//*[contains(text(), 'Not Now')]",
 }
 
