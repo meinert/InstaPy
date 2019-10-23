@@ -1101,7 +1101,7 @@ def store_mutual_following(
         )
 
 
-def load_followers_data(username, compare_by, compare_track, logger, logfolder):
+def load_followers_data(username, compare_by, compare_track, logger, logfolder, return_empty=False):
     """ Write grabbed `followers` data into local storage """
     # get the list of all existing FULL `Followers` data files in
     # ~/logfolder/username/followers/ location
@@ -1167,7 +1167,11 @@ def load_followers_data(username, compare_by, compare_track, logger, logfolder):
                 selected_filename = data_for_today[median_index]
             if compare_track == "last":
                 selected_filename = data_for_today[-1]
-
+        elif return_empty:
+            logger.info(
+                "There are no any `Followers` data files in the {} location for today".format(files_location)
+            )
+            return [], None
         else:
             selected_filename = sorted_filenames[-1]
             logger.info(
@@ -1198,7 +1202,11 @@ def load_followers_data(username, compare_by, compare_track, logger, logfolder):
                 selected_filename = data_for_month[median_index]
             if compare_track == "last":
                 selected_filename = data_for_month[-1]
-
+        elif return_empty:
+            logger.info(
+                "There are no any `Followers` data files in the {} location for current month".format(files_location)
+            )
+            return [], None
         else:
             selected_filename = sorted_filenames[-1]
             logger.info(
@@ -1229,7 +1237,11 @@ def load_followers_data(username, compare_by, compare_track, logger, logfolder):
                 selected_filename = data_for_year[median_index]
             if compare_track == "last":
                 selected_filename = data_for_year[-1]
-
+        elif return_empty:
+            logger.info(
+                "There are no any `Followers` data files in the {} location for current year".format(files_location)
+            )
+            return [], None
         else:
             selected_filename = sorted_filenames[-1]
             logger.info(
@@ -1256,7 +1268,7 @@ def load_followers_data(username, compare_by, compare_track, logger, logfolder):
     # return that file to be compared
     return followers_data, selected_filename
 
-def load_following_data(username, compare_by, compare_track, logger, logfolder):
+def load_following_data(username, compare_by, compare_track, logger, logfolder, return_empty=False):
     """ Write grabbed `following` data into local storage """
     # get the list of all existing FULL `Following` data files in
     # ~/logfolder/username/following/ location
@@ -1322,6 +1334,11 @@ def load_following_data(username, compare_by, compare_track, logger, logfolder):
                 selected_filename = data_for_today[median_index]
             if compare_track == "last":
                 selected_filename = data_for_today[-1]
+        elif return_empty:
+            logger.info(
+                "There are no any `Following` data files in the {} location for today".format(files_location)
+            )
+            return [], None
 
         else:
             selected_filename = sorted_filenames[-1]
@@ -1353,7 +1370,11 @@ def load_following_data(username, compare_by, compare_track, logger, logfolder):
                 selected_filename = data_for_month[median_index]
             if compare_track == "last":
                 selected_filename = data_for_month[-1]
-
+        elif return_empty:
+            logger.info(
+                "There are no any `Following` data files in the {} location for current month".format(files_location)
+            )
+            return [], None
         else:
             selected_filename = sorted_filenames[-1]
             logger.info(
@@ -1384,7 +1405,11 @@ def load_following_data(username, compare_by, compare_track, logger, logfolder):
                 selected_filename = data_for_year[median_index]
             if compare_track == "last":
                 selected_filename = data_for_year[-1]
-
+        elif return_empty:
+            logger.info(
+                "There are no any `Following` data files in the {} location current year".format(files_location)
+            )
+            return [], None
         else:
             selected_filename = sorted_filenames[-1]
             logger.info(
@@ -1478,7 +1503,7 @@ def load_nonfollower_data(username, compare_by, compare_track, logger, logfolder
             if compare_track == "last":
                 selected_filename = data_for_today[-1]
 
-        elif return_empty: #TODO: Do similar for year, month
+        elif return_empty:
             logger.info(
                 "There are no any `Nonfollowers` data files in the {} location for today".format(files_location)
             )
@@ -1514,6 +1539,12 @@ def load_nonfollower_data(username, compare_by, compare_track, logger, logfolder
             if compare_track == "last":
                 selected_filename = data_for_month[-1]
 
+        elif return_empty:
+            logger.info(
+                "There are no any `Nonfollowers` data files in the {} location for current month".format(files_location)
+            )
+            return [], None
+
         else:
             selected_filename = sorted_filenames[-1]
             logger.info(
@@ -1544,6 +1575,12 @@ def load_nonfollower_data(username, compare_by, compare_track, logger, logfolder
                 selected_filename = data_for_year[median_index]
             if compare_track == "last":
                 selected_filename = data_for_year[-1]
+
+        elif return_empty: #TODO: Do similar for year, month
+            logger.info(
+                "There are no any `Nonfollowers` data files in the {} location for current year".format(files_location)
+            )
+            return [], None
 
         else:
             selected_filename = sorted_filenames[-1]
